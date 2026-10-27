@@ -6,7 +6,7 @@
 <title>Fedimint Card</title>
 <meta name="description" content="Fedimint Card is an experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
 <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0e1a3a">
+<meta name="theme-color" content="#2a4fae">
 <link rel="canonical" href="https://fedimintcard.org/">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
@@ -24,13 +24,13 @@
 /* One page, one column. Navy ground, gold only where the chip is. */
 @font-face { font-family: "Figtree"; src: url("/assets/fonts/Figtree-Variable.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
 :root {
-  --night: #0a1230;
-  --navy: #13224a;
+  --night: #1a3272;
+  --navy: #22408a;
   --blue: #2b4ea6;
   --ink: #eef3ff;
   --mist: #b9c8ee;
-  --dim: #8796c2;
-  --line: rgba(185, 200, 238, .16);
+  --dim: #a9b8e2;
+  --line: rgba(214, 226, 255, .22);
   --gold: #d2bb6a;
   --gold-hi: #f4e9b0;
   --sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -41,7 +41,8 @@
 html { background: var(--night); }
 body {
   margin: 0; color: var(--ink); font: 400 18px/1.6 var(--sans);
-  background: radial-gradient(1200px 700px at 85% -10%, #24418f 0%, transparent 60%), var(--night);
+  background: radial-gradient(1200px 760px at 85% -10%, #4f7fe6 0%, transparent 62%), linear-gradient(180deg, #2a4fae 0%, #1f3d8c 45%, var(--night) 100%);
+  background-attachment: fixed;
   padding-inline: clamp(16px, 5vw, 56px); padding-block: 0;
 }
 a { color: var(--ink); text-decoration-color: var(--gold); text-underline-offset: 3px; }
@@ -70,22 +71,18 @@ h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -.01
 .sub { color: var(--mist); margin: 0; max-width: 40em; }
 
 ol.steps { list-style: none; padding: 0; margin: 32px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; counter-reset: step; }
-ol.steps li { counter-increment: step; background: rgba(19, 34, 74, .55); border: 1px solid var(--line); border-radius: 14px; padding: 22px; min-width: 0; }
+ol.steps li { counter-increment: step; background: rgba(10, 22, 60, .32); border: 1px solid var(--line); border-radius: 14px; padding: 22px; min-width: 0; }
 ol.steps li::before { content: counter(step); display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px;
   font: 700 15px/1 var(--sans); color: var(--night); background: linear-gradient(135deg, var(--gold-hi), var(--gold) 50%, #a88a3c); }
 ol.steps h3 { font-size: 19px; font-weight: 700; margin: 14px 0 6px; }
 ol.steps p { margin: 0; color: var(--mist); font-size: 16px; }
 
-dl.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; margin: 28px 0 0; }
-dl.facts div { padding-block: 16px; border-bottom: 1px solid var(--line); min-width: 0; }
-dt { font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
-dd { margin: 6px 0 0; }
 .num { font-variant-numeric: tabular-nums; }
 
-.note { margin-top: 28px; padding: 18px 20px; border-radius: 12px; border: 1px solid rgba(210, 187, 106, .4); background: rgba(210, 187, 106, .07); color: var(--ink); max-width: 46em; }
+.note { margin-top: 16px; padding: 18px 20px; border-radius: 12px; border: 1px solid rgba(210, 187, 106, .4); background: rgba(210, 187, 106, .07); color: var(--ink); max-width: 46em; }
 
 ul.links { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-ul.links a { display: block; height: 100%; text-decoration: none; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: rgba(19, 34, 74, .45); }
+ul.links a { display: block; height: 100%; text-decoration: none; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: rgba(10, 22, 60, .28); }
 ul.links a:hover { border-color: rgba(210, 187, 106, .55); color: var(--ink); }
 ul.links b { display: block; font-weight: 700; }
 ul.links span { color: var(--dim); font-size: 15px; overflow-wrap: anywhere; }
@@ -97,8 +94,7 @@ footer p { margin: 0; max-width: 46em; }
   .hero { grid-template-columns: 1fr; }
   .cards { max-width: 520px; }
   ol.steps, ul.links { grid-template-columns: 1fr; }
-  dl.facts { grid-template-columns: 1fr; }
-}
+  }
 @media (max-width: 420px) { .status { display: none; } }
 @media (prefers-reduced-motion: no-preference) {
   .cards img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
@@ -137,17 +133,8 @@ footer p { margin: 0; max-width: 46em; }
   </ol>
 </section>
 
-<section id="spike">
-  <h2>What the spike showed</h2>
-  <p class="sub">Run in October 2026 on a stock Fedimint federation, with no change to its consensus code.</p>
-  <dl class="facts">
-    <div><dt>Card</dt><dd>NXP J3R180 (JCOP 4), a dual-interface JavaCard</dd></div>
-    <div><dt>Federation</dt><dd>Four guardians, Fedimint <code>mintv2</code> module</dd></div>
-    <div><dt>Keys</dt><dd>Generated on the card; the applet has no command that returns a private key</dd></div>
-    <div><dt>Signing time</dt><dd class="num">About 850 ms per BIP340 signature on the card</dd></div>
-    <div><dt>Rejected as expected</dt><dd>A signature from another key, a second spend of the same note, and outputs changed after signing</dd></div>
-    <div><dt>End to end</dt><dd>Ecash moved from a phone wallet to the card, paid a till by tap and was cashed out again</dd></div>
-  </dl>
+<section id="status">
+  <h2>Status</h2>
   <p class="note">Fedimint Card is an experimental prototype and has had no outside security review. Keep only small amounts on a card.</p>
 </section>
 
@@ -155,7 +142,7 @@ footer p { margin: 0; max-width: 46em; }
   <h2>Code and contact</h2>
   <ul class="links">
     <li><a href="https://github.com/fedimintcard"><b>GitHub</b><span>github.com/fedimintcard</span></a></li>
-    <li><a href="https://github.com/bobodread876/fedimint-card"><b>Spike plan</b><span>github.com/bobodread876/fedimint-card</span></a></li>
+    <li><a href="https://github.com/bobodread876/fedimint-card"><b>Source</b><span>The applet and the till code</span></a></li>
     <li><a href="https://fedimint.org"><b>Fedimint</b><span>The protocol this card is built on</span></a></li>
   </ul>
 </section>
