@@ -66,6 +66,10 @@ header.top { display: flex; align-items: center; justify-content: space-between;
 .cards .back { right: 0; top: 0; transform: rotate(7deg); opacity: .96; }
 .cards .front { left: 0; bottom: 0; transform: rotate(-6deg); }
 
+figure.film { margin: 28px 0 0; display: grid; gap: 12px; }
+figure.film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 14px; background: #000;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, .35), 0 0 0 1px var(--line); }
+figure.film figcaption { color: var(--dim); font-size: 15px; }
 section { border-top: 1px solid var(--line); padding-block: clamp(40px, 7vw, 72px); }
 h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; text-wrap: balance; }
 .sub { color: var(--mist); margin: 0; max-width: 40em; }
@@ -122,6 +126,18 @@ footer p { margin: 0; max-width: 46em; }
     <img class="front" src="/assets/card-front.webp" alt="Front of the card: the fedimintcard logo, a gold chip and the words Fedimint ecash card" width="1200" height="759">
   </div>
 </div>
+
+<section id="film" aria-labelledby="film-title">
+  <h2 id="film-title">See it work</h2>
+  <p class="sub">The Fedi app loads the card, the card pays a till by tap, and the federation returns the change.</p>
+  <figure class="film">
+    <video controls playsinline preload="metadata" poster="/film/fedimint-card-film-1-poster.jpg" aria-label="Fedimint Card film, 48 seconds. The card makes its keys on the chip, the Fedi app loads it with ecash, a till takes a tap, the card signs, and the federation's guardians check the signature and send the change back to the card.">
+      <source src="/film/fedimint-card-film-1-720.mp4" type="video/mp4" media="(max-width: 800px)">
+      <source src="/film/fedimint-card-film-1.mp4" type="video/mp4">
+    </video>
+    <figcaption>48 seconds, with sound. How Fedimint Card is meant to work; the card is an experimental prototype.</figcaption>
+  </figure>
+</section>
 
 <section id="how">
   <h2>How a payment works</h2>
