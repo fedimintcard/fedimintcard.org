@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fedimint Card</title>
+<meta name="description" content="Fedimint Card is an experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e1a3a">
+<link rel="canonical" href="https://fedimintcard.org/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fedimintcard.org/">
+<meta property="og:title" content="Fedimint Card">
+<meta property="og:description" content="An experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
+<meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* One page, one column. Navy ground, gold only where the chip is. */
+@font-face { font-family: "Figtree"; src: url("/assets/fonts/Figtree-Variable.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
+:root {
+  --night: #0a1230;
+  --navy: #13224a;
+  --blue: #2b4ea6;
+  --ink: #eef3ff;
+  --mist: #b9c8ee;
+  --dim: #8796c2;
+  --line: rgba(185, 200, 238, .16);
+  --gold: #d2bb6a;
+  --gold-hi: #f4e9b0;
+  --sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--night); }
+body {
+  margin: 0; color: var(--ink); font: 400 18px/1.6 var(--sans);
+  background: radial-gradient(1200px 700px at 85% -10%, #24418f 0%, transparent 60%), var(--night);
+  padding-inline: clamp(16px, 5vw, 56px); padding-block: 0;
+}
+a { color: var(--ink); text-decoration-color: var(--gold); text-underline-offset: 3px; }
+a:hover { color: var(--gold-hi); }
+a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 3px; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 28px; }
+.lock { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 26px; letter-spacing: -.01em; }
+.lock img { height: 26px; width: auto; }
+.lock b { font-weight: 800; color: var(--ink); }
+.lock span { font-weight: 400; color: var(--mist); }
+.status { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-hi);
+  border: 1px solid rgba(210, 187, 106, .45); border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: center; padding-block: clamp(24px, 6vw, 72px) clamp(40px, 8vw, 96px); }
+.hero h1 { font-size: clamp(40px, 7vw, 76px); line-height: 1.02; font-weight: 800; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+.hero p { font-size: clamp(18px, 2.2vw, 21px); color: var(--mist); max-width: 34em; margin: 22px 0 0; }
+.cards { position: relative; aspect-ratio: 1 / .82; max-width: 100%; }
+.cards img { position: absolute; width: 82%; height: auto; border-radius: 4.2% / 6.6%; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); }
+.cards .back { right: 0; top: 0; transform: rotate(7deg); opacity: .96; }
+.cards .front { left: 0; bottom: 0; transform: rotate(-6deg); }
+
+section { border-top: 1px solid var(--line); padding-block: clamp(40px, 7vw, 72px); }
+h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; text-wrap: balance; }
+.sub { color: var(--mist); margin: 0; max-width: 40em; }
+
+ol.steps { list-style: none; padding: 0; margin: 32px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; counter-reset: step; }
+ol.steps li { counter-increment: step; background: rgba(19, 34, 74, .55); border: 1px solid var(--line); border-radius: 14px; padding: 22px; min-width: 0; }
+ol.steps li::before { content: counter(step); display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px;
+  font: 700 15px/1 var(--sans); color: var(--night); background: linear-gradient(135deg, var(--gold-hi), var(--gold) 50%, #a88a3c); }
+ol.steps h3 { font-size: 19px; font-weight: 700; margin: 14px 0 6px; }
+ol.steps p { margin: 0; color: var(--mist); font-size: 16px; }
+
+dl.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; margin: 28px 0 0; }
+dl.facts div { padding-block: 16px; border-bottom: 1px solid var(--line); min-width: 0; }
+dt { font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--dim); }
+dd { margin: 6px 0 0; }
+.num { font-variant-numeric: tabular-nums; }
+
+.note { margin-top: 28px; padding: 18px 20px; border-radius: 12px; border: 1px solid rgba(210, 187, 106, .4); background: rgba(210, 187, 106, .07); color: var(--ink); max-width: 46em; }
+
+ul.links { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+ul.links a { display: block; height: 100%; text-decoration: none; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: rgba(19, 34, 74, .45); }
+ul.links a:hover { border-color: rgba(210, 187, 106, .55); color: var(--ink); }
+ul.links b { display: block; font-weight: 700; }
+ul.links span { color: var(--dim); font-size: 15px; overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--dim); font-size: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+footer p { margin: 0; max-width: 46em; }
+
+@media (max-width: 820px) {
+  .hero { grid-template-columns: 1fr; }
+  .cards { max-width: 520px; }
+  ol.steps, ul.links { grid-template-columns: 1fr; }
+  dl.facts { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) { .status { display: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .cards img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+  .cards:hover .front { transform: rotate(-3deg) translateY(-6px); }
+  .cards:hover .back { transform: rotate(10deg) translateX(6px); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
+  <span class="status">Experimental prototype</span>
+</header>
+
+<main>
+<div class="hero">
+  <div>
+    <h1>Fedimint ecash on a card.</h1>
+    <p>Fedimint Card is an experimental JavaCard applet. The card holds the spend keys for Fedimint ecash notes and signs each spend itself when you tap it at a till.</p>
+  </div>
+  <div class="cards" aria-label="The front and back of a Fedimint Card">
+    <img class="back" src="/assets/card-back.webp" alt="Back of the card: a signature panel, a QR code to fedimintcard.org and a short description" width="1200" height="759">
+    <img class="front" src="/assets/card-front.webp" alt="Front of the card: the fedimintcard logo, a gold chip and the words Fedimint ecash card" width="1200" height="759">
+  </div>
+</div>
+
+<section id="how">
+  <h2>How a payment works</h2>
+  <p class="sub">The card does one job: it signs with keys that were made on its chip. The till and the federation do everything else.</p>
+  <ol class="steps">
+    <li><h3>Load the card</h3><p>Ecash from a Fedimint wallet is reissued to keys the card generated on its own chip. The federation issues the new notes to those keys.</p></li>
+    <li><h3>Tap at the till</h3><p>The till builds the transaction and the card signs it with the note's key. The card sees only the 32-byte transaction hash.</p></li>
+    <li><h3>The federation settles</h3><p>The guardians check the signature and mark the note spent. Change goes back to keys on the card in the same transaction.</p></li>
+  </ol>
+</section>
+
+<section id="spike">
+  <h2>What the spike showed</h2>
+  <p class="sub">Run in October 2026 on a stock Fedimint federation, with no change to its consensus code.</p>
+  <dl class="facts">
+    <div><dt>Card</dt><dd>NXP J3R180 (JCOP 4), a dual-interface JavaCard</dd></div>
+    <div><dt>Federation</dt><dd>Four guardians, Fedimint <code>mintv2</code> module</dd></div>
+    <div><dt>Keys</dt><dd>Generated on the card; the applet has no command that returns a private key</dd></div>
+    <div><dt>Signing time</dt><dd class="num">About 850 ms per BIP340 signature on the card</dd></div>
+    <div><dt>Rejected as expected</dt><dd>A signature from another key, a second spend of the same note, and outputs changed after signing</dd></div>
+    <div><dt>End to end</dt><dd>Ecash moved from a phone wallet to the card, paid a till by tap and was cashed out again</dd></div>
+  </dl>
+  <p class="note">Fedimint Card is an experimental prototype and has had no outside security review. Keep only small amounts on a card.</p>
+</section>
+
+<section id="links">
+  <h2>Code and contact</h2>
+  <ul class="links">
+    <li><a href="https://github.com/fedimintcard"><b>GitHub</b><span>github.com/fedimintcard</span></a></li>
+    <li><a href="https://github.com/bobodread876/fedimint-card"><b>Spike plan</b><span>github.com/bobodread876/fedimint-card</span></a></li>
+    <li><a href="https://fedimint.org"><b>Fedimint</b><span>The protocol this card is built on</span></a></li>
+  </ul>
+</section>
+</main>
+
+<footer>
+  <p>Fedimint Card is an independent open source project built on the Fedimint protocol. MIT licensed.</p>
+  <p>Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
+</footer>
+
+</div>
+</body>
+</html>
