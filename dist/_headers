@@ -10,3 +10,6 @@
 
 /assets/*
   Cache-Control: public, max-age=86400
+
+/assets/site.css
+  Cache-Control: public, max-age=300

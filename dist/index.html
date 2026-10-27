@@ -20,92 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<style>
-/* One page, one column. Navy ground, gold only where the chip is. */
-@font-face { font-family: "Figtree"; src: url("/assets/fonts/Figtree-Variable.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
-:root {
-  --night: #1a3272;
-  --navy: #22408a;
-  --blue: #2b4ea6;
-  --ink: #eef3ff;
-  --mist: #b9c8ee;
-  --dim: #a9b8e2;
-  --line: rgba(214, 226, 255, .22);
-  --gold: #d2bb6a;
-  --gold-hi: #f4e9b0;
-  --sans: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html { background: var(--night); }
-body {
-  margin: 0; color: var(--ink); font: 400 18px/1.6 var(--sans);
-  background: radial-gradient(1200px 760px at 85% -10%, #4f7fe6 0%, transparent 62%), linear-gradient(180deg, #2a4fae 0%, #1f3d8c 45%, var(--night) 100%);
-  background-attachment: fixed;
-  padding-inline: clamp(16px, 5vw, 56px); padding-block: 0;
-}
-a { color: var(--ink); text-decoration-color: var(--gold); text-underline-offset: 3px; }
-a:hover { color: var(--gold-hi); }
-a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 3px; }
-.wrap { max-width: 1080px; margin: 0 auto; }
-
-header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 28px; }
-.lock { display: flex; align-items: center; gap: 12px; text-decoration: none; font-size: 26px; letter-spacing: -.01em; }
-.lock img { height: 26px; width: auto; }
-.lock b { font-weight: 800; color: var(--ink); }
-.lock span { font-weight: 400; color: var(--mist); }
-.status { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-hi);
-  border: 1px solid rgba(210, 187, 106, .45); border-radius: 999px; padding: 8px 12px; white-space: nowrap; }
-
-.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 64px); align-items: center; padding-block: clamp(24px, 6vw, 72px) clamp(40px, 8vw, 96px); }
-.hero h1 { font-size: clamp(40px, 7vw, 76px); line-height: 1.02; font-weight: 800; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
-.hero p { font-size: clamp(18px, 2.2vw, 21px); color: var(--mist); max-width: 34em; margin: 22px 0 0; }
-.cards { position: relative; aspect-ratio: 1 / .82; max-width: 100%; }
-.cards img { position: absolute; width: 82%; height: auto; border-radius: 4.2% / 6.6%; box-shadow: 0 30px 60px rgba(0, 0, 0, .45); }
-.cards .back { right: 0; top: 0; transform: rotate(7deg); opacity: .96; }
-.cards .front { left: 0; bottom: 0; transform: rotate(-6deg); }
-
-figure.film { margin: 28px 0 0; display: grid; gap: 12px; }
-figure.film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 14px; background: #000;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, .35), 0 0 0 1px var(--line); }
-figure.film figcaption { color: var(--dim); font-size: 15px; }
-section { border-top: 1px solid var(--line); padding-block: clamp(40px, 7vw, 72px); }
-h2 { font-size: clamp(26px, 3.4vw, 34px); font-weight: 800; letter-spacing: -.01em; margin: 0 0 8px; text-wrap: balance; }
-.sub { color: var(--mist); margin: 0; max-width: 40em; }
-
-ol.steps { list-style: none; padding: 0; margin: 32px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; counter-reset: step; }
-ol.steps li { counter-increment: step; background: rgba(10, 22, 60, .32); border: 1px solid var(--line); border-radius: 14px; padding: 22px; min-width: 0; }
-ol.steps li::before { content: counter(step); display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 8px;
-  font: 700 15px/1 var(--sans); color: var(--night); background: linear-gradient(135deg, var(--gold-hi), var(--gold) 50%, #a88a3c); }
-ol.steps h3 { font-size: 19px; font-weight: 700; margin: 14px 0 6px; }
-ol.steps p { margin: 0; color: var(--mist); font-size: 16px; }
-
-.num { font-variant-numeric: tabular-nums; }
-
-.note { margin-top: 16px; padding: 18px 20px; border-radius: 12px; border: 1px solid rgba(210, 187, 106, .4); background: rgba(210, 187, 106, .07); color: var(--ink); max-width: 46em; }
-
-ul.links { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-ul.links a { display: block; height: 100%; text-decoration: none; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: rgba(10, 22, 60, .28); }
-ul.links a:hover { border-color: rgba(210, 187, 106, .55); color: var(--ink); }
-ul.links b { display: block; font-weight: 700; }
-ul.links span { color: var(--dim); font-size: 15px; overflow-wrap: anywhere; }
-
-footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--dim); font-size: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
-footer p { margin: 0; max-width: 46em; }
-
-@media (max-width: 820px) {
-  .hero { grid-template-columns: 1fr; }
-  .cards { max-width: 520px; }
-  ol.steps, ul.links { grid-template-columns: 1fr; }
-  }
-@media (max-width: 420px) { .status { display: none; } }
-@media (prefers-reduced-motion: no-preference) {
-  .cards img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
-  .cards:hover .front { transform: rotate(-3deg) translateY(-6px); }
-  .cards:hover .back { transform: rotate(10deg) translateX(6px); }
-}
-</style>
+<link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
 <div class="wrap">
@@ -149,24 +64,32 @@ footer p { margin: 0; max-width: 46em; }
   </ol>
 </section>
 
-<section id="status">
-  <h2>Status</h2>
-  <p class="note">Fedimint Card is an experimental prototype and has had no outside security review. Keep only small amounts on a card.</p>
+<section id="risks" aria-labelledby="risks-title">
+  <h2 id="risks-title">Risks to know</h2>
+  <p class="sub">Fedimint Card is an experimental prototype, and its applet and till code have had no outside security review. Keep only small amounts on a card, amounts you can afford to lose.</p>
+  <ul class="risks">
+    <li><b>The federation holds the bitcoin.</b>Fedimint ecash is a claim on one federation. If enough of its guardians fail or act together against you, the ecash loses its value.</li>
+    <li><b>A lost card can lose its ecash.</b>In today's prototype the spend keys are made on the card and live only there. The planned design lets the owner's phone sweep a lost card.</li>
+    <li><b>The prototype has no PIN or spending limits.</b>Any reader that reaches the card can ask it to sign, or replace a note key, which strands the note. PINs and limits that cap what a skimmer can do are planned.</li>
+    <li><b>Check the amount on the till.</b>The till shows the amount and builds the payment, as with any card. Pay only at tills you trust.</li>
+    <li><b>The till needs a connection.</b>The federation checks each payment as it happens, so a till that cannot reach it cannot take a tap.</li>
+    <li><b>The Fedi app does not load cards yet.</b>The film shows how loading is meant to work. Today a separate wallet on a computer loads the card.</li>
+  </ul>
 </section>
 
 <section id="links">
   <h2>Code and contact</h2>
   <ul class="links">
-    <li><a href="https://github.com/fedimintcard"><b>GitHub</b><span>github.com/fedimintcard</span></a></li>
-    <li><a href="https://github.com/bobodread876/fedimint-card"><b>Source</b><span>The applet and the till code</span></a></li>
+    <li><a href="/support"><b>Support</b><span>Questions, bugs and security reports</span></a></li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard"><b>Source</b><span>The applet, host code and till: fedimintcard/fedimintcard</span></a></li>
     <li><a href="https://fedimint.org"><b>Fedimint</b><span>The protocol this card is built on</span></a></li>
   </ul>
 </section>
 </main>
 
 <footer>
-  <p>Fedimint Card is an independent open source project built on the Fedimint protocol. MIT licensed.</p>
-  <p>Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
+  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
+  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
 </footer>
 
 </div>
