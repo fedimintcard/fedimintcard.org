@@ -1,0 +1,16 @@
+/* Fedimint Card colors (brand/generate.py writes this file) */
+:root {
+  --night: #1A3272;  /* The deepest navy: the bottom of the site, the icon and the film. */
+  --navy: #22408A;  /* The ground: backgrounds behind the gold mark. */
+  --blue: #2B4EA6;  /* The lit navy at the top of the ground. */
+  --sky: #4F7FE6;  /* The light falling on the ground from the upper right. */
+  --ink: #EEF3FF;  /* Text on the navy. */
+  --mist: #B9C8EE;  /* Secondary text on the navy, and "card" in the wordmark. */
+  --gold-light: #F4E9B0;  /* The mark's gradient, corner to corner: light. */
+  --gold: #D2BB6A;  /* The mark's gradient: middle. The accent: links and highlights. */
+  --gold-deep: #A88A3C;  /* The mark's gradient: deep. */
+  --paper: #F5F7FD;  /* Light background. */
+  --ink-on-paper: #1A3272;  /* Text and the one-color mark on light grounds. */
+  --mist-on-paper: #5B6C9E;  /* Secondary text on light grounds, and "card" in the light wordmark. */
+  --font: "Figtree", ui-sans-serif, system-ui, sans-serif;
+}
