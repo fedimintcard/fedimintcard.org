@@ -3,95 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fedimint Card</title>
-<meta name="description" content="Fedimint Card is an experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#2a4fae">
-<link rel="canonical" href="https://fedimintcard.org/">
+<title>Coming soon</title>
+<meta name="description" content="This site is temporarily unavailable while we finish work on it.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f6f3ec">
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://fedimintcard.org/">
-<meta property="og:title" content="Fedimint Card">
-<meta property="og:description" content="An experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
-<meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/coming-soon.css">
 </head>
 <body>
-<div class="wrap">
-
-<header class="top">
-  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
-  <span class="status">Experimental prototype</span>
-</header>
-
-<main>
-<div class="hero">
-  <div>
-    <h1>Fedimint ecash on a card.</h1>
-    <p>Fedimint Card is an experimental JavaCard applet. The card holds the spend keys for Fedimint ecash notes and signs each spend itself when you tap it at a till.</p>
-  </div>
-  <div class="cards" aria-label="The front and back of a Fedimint Card">
-    <img class="back" src="/assets/card-back.webp" alt="Back of the card: a signature panel, a QR code to fedimintcard.org and a short description" width="1200" height="759">
-    <img class="front" src="/assets/card-front.webp" alt="Front of the card: the fedimintcard logo, a gold chip and the words Fedimint ecash card" width="1200" height="759">
-  </div>
-</div>
-
-<section id="film" aria-labelledby="film-title">
-  <h2 id="film-title">See it work</h2>
-  <p class="sub">The Fedi app loads the card, the card pays a till by tap, and the federation returns the change.</p>
-  <figure class="film">
-    <video controls playsinline preload="metadata" poster="/film/fedimint-card-film-1-poster.jpg" aria-label="Fedimint Card film, 48 seconds. The card makes its keys on the chip, the Fedi app loads it with ecash, a till takes a tap, the card signs, and the federation's guardians check the signature and send the change back to the card.">
-      <source src="/film/fedimint-card-film-2-720.mp4" type="video/mp4" media="(max-width: 800px)">
-      <source src="/film/fedimint-card-film-2.mp4" type="video/mp4">
-    </video>
-    <figcaption>48 seconds, with sound. How Fedimint Card is meant to work; the card is an experimental prototype.</figcaption>
-  </figure>
-</section>
-
-<section id="how">
-  <h2>How a payment works</h2>
-  <p class="sub">The card does one job: it signs with keys that were made on its chip. The till and the federation do everything else.</p>
-  <ol class="steps">
-    <li><h3>Load the card</h3><p>Ecash from a Fedimint wallet is reissued to keys the card generated on its own chip. The federation issues the new notes to those keys.</p></li>
-    <li><h3>Tap at the till</h3><p>The till builds the transaction and the card signs it with the note's key. The card sees only the 32-byte transaction hash.</p></li>
-    <li><h3>The federation settles</h3><p>The guardians check the signature and mark the note spent. Change goes back to keys on the card in the same transaction.</p></li>
-  </ol>
-</section>
-
-<section id="risks" aria-labelledby="risks-title">
-  <h2 id="risks-title">Risks to know</h2>
-  <p class="sub">Fedimint Card is an experimental prototype, and its applet and till code have had no outside security review. Keep only small amounts on a card, amounts you can afford to lose.</p>
-  <ul class="risks">
-    <li><b>The federation holds the bitcoin.</b>Fedimint ecash is a claim on one federation. If enough of its guardians fail or act together against you, the ecash loses its value.</li>
-    <li><b>A lost card can lose its ecash.</b>In today's prototype the spend keys are made on the card and live only there. The planned design lets the owner's phone sweep a lost card.</li>
-    <li><b>The prototype has no PIN or spending limits.</b>Any reader that reaches the card can ask it to sign, or replace a note key, which strands the note. PINs and limits that cap what a skimmer can do are planned.</li>
-    <li><b>Check the amount on the till.</b>The till shows the amount and builds the payment, as with any card. Pay only at tills you trust.</li>
-    <li><b>The till needs a connection.</b>The federation checks each payment as it happens, so a till that cannot reach it cannot take a tap.</li>
-    <li><b>The Fedi app does not load cards yet.</b>The film shows how loading is meant to work. Today a separate wallet on a computer loads the card.</li>
-  </ul>
-</section>
-
-<section id="links">
-  <h2>Code and contact</h2>
-  <ul class="links">
-    <li><a href="/support"><b>Support</b><span>Questions, bugs and security reports</span></a></li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard"><b>Source</b><span>The applet, host code and till: fedimintcard/fedimintcard</span></a></li>
-    <li><a href="https://fedimint.org"><b>Fedimint</b><span>The protocol this card is built on</span></a></li>
-  </ul>
-</section>
+<main class="wrap">
+  <p class="eyebrow">Temporarily unavailable</p>
+  <h1>Under construction</h1>
+  <p class="lede">We're finishing some work on this site. Please check back soon.</p>
 </main>
-
-<footer>
-  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
-  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
-</footer>
-
-</div>
 </body>
 </html>
