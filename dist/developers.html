@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Developers · Fedimint Card</title>
+<meta name="description" content="The Fedimint Card applet, its commands, the till and registry APIs, and how to test without a card.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0B1530">
+<link rel="canonical" href="https://fedimintcard.org/developers">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fedimintcard.org/developers">
+<meta property="og:title" content="Developers · Fedimint Card">
+<meta property="og:description" content="The Fedimint Card applet, its commands, the till and registry APIs, and how to test without a card.">
+<meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
+  <span class="status">Experimental prototype</span>
+</header>
+
+<main class="doc">
+<p class="eyebrow">Experimental / Developers</p>
+<h1>Build on Fedimint Card</h1>
+<p class="lede">The card holds spend keys and a PIN. A till builds each Fedimint transaction, the card signs its hash, and a registry records which notes belong to which card. This page covers the parts, the card's commands and how to test them.</p>
+<ul class="facts" aria-label="At a glance"><li>Experimental</li><li>Applet 2.0</li><li>Java Card 3.0.5</li><li>Fedimint v0.13.0-beta.1</li><li>MIT license</li></ul>
+
+<pre class="apdu" aria-label="Selecting the card"><span class="c">Select the card</span>
+&gt; 00 A4 04 00 08 F0 46 4D 43 41 52 44 01
+&lt; 02 00 90 00   <span class="c">applet version 2.0</span></pre>
+
+<nav class="toc" aria-label="On this page">
+  <a href="#parts">How the parts fit</a><a href="#status">Status</a><a href="#commands">The card's commands</a><a href="#payment">How a payment is built</a><a href="#till">The till API</a><a href="#registry">The registry</a><a href="#code">The code</a><a href="#testing">Testing without a card</a><a href="#install">Installing on a card</a><a href="#limits">Known limits</a><a href="#security">Issues and security</a>
+</nav>
+
+<section id="parts">
+  <h2>How the parts fit</h2>
+  <ul>
+    <li><strong>The card.</strong> A Java Card applet on an NXP J3R180 chip. It makes BIP340 keys in 8 slots, guards signing with a PIN and signs a 32-byte hash. It never sees a transaction or an amount, and no command returns a private key.</li>
+    <li><strong>The till.</strong> <code>card-sidecar</code>, a Rust service built on the Fedimint client. It joins a federation, plans which notes to spend, builds the transaction, collects the card's signatures and submits it. The till's own wallet receives the merchant's ecash.</li>
+    <li><strong>The POS phone.</strong> An Android or iOS app that reads the card over NFC, takes the PIN and passes card commands to the till.</li>
+    <li><strong>The registry.</strong> A Cloudflare Worker at registry.fedimintcard.org that records each card's notes by its short id, the last 4 bytes of its slot-0 public key. Tills read and update it on every payment. See <a href="/privacy">Privacy</a> for what it can see.</li>
+    <li><strong>The provisioner.</strong> The operator's phone app. It installs the applet over NFC, sets each card's management keys and PIN, and approves new tills.</li>
+    <li><strong>The federation.</strong> A Fedimint federation running the mintv2 module. Its guardians check each note's signature and mark it spent.</li>
+  </ul>
+</section>
+
+<section id="status">
+  <h2>Status</h2>
+  <p>Fedimint Card is an experimental prototype. The applet and till have been tested on NXP J3R180 cards with a few phones, and have had no outside security review. A card holds at most 8 notes, so many prices leave change it cannot hold and the till refuses them. Cards with 32 slots are in development.</p>
+  <p>Build against it to learn and give feedback. Read the <a href="/#risks">risks</a> before anyone holds real value on a card.</p>
+</section>
+
+<section id="commands">
+  <h2>The card's commands</h2>
+  <p>AID <code>F0464D4341524401</code>, class byte <code>B0</code>. Slots are numbered 0 to 7 in P1, and P2 is 0 unless noted.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>INS</th><th>Command</th><th>Data</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td><code>10</code></td><td>GEN_KEY</td><td>none. P2 = 1 replaces a used slot</td><td>32-byte x-only public key</td></tr>
+      <tr><td><code>11</code></td><td>GET_PUB</td><td>none</td><td>32-byte x-only public key</td></tr>
+      <tr><td><code>12</code></td><td>SIGN</td><td>32-byte message</td><td>64-byte BIP340 signature</td></tr>
+      <tr><td><code>40</code></td><td>VERIFY_PIN</td><td>PIN, 4 to 8 bytes</td><td>opens a signing session</td></tr>
+      <tr><td><code>41</code></td><td>SET_PIN</td><td>PIN, 4 to 8 bytes</td><td>once per card</td></tr>
+      <tr><td><code>42</code></td><td>CHANGE_PIN</td><td>old PIN then new PIN, same length</td><td>needs VERIFY_PIN; ends the session</td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>A verified PIN lasts for one selection. Any SELECT or card reset ends it, so VERIFY_PIN and SIGN must happen in the same selection.</li>
+    <li>Three wrong PINs block the card for good. There is no unblock command.</li>
+    <li>SIGN checks the PIN before the slot, so a reader without the PIN cannot learn which slots hold keys.</li>
+    <li>Signatures use fresh randomness, so the same message signed twice gives different signatures.</li>
+    <li>On a J3R180, SIGN takes about 850 ms, GEN_KEY about 125 ms and GET_PUB about 27 ms.</li>
+  </ul>
+  <div class="scroll"><table>
+    <thead><tr><th>Status word</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>9000</code></td><td>Done</td></tr>
+      <tr><td><code>63CX</code></td><td>Wrong PIN, X tries left</td></tr>
+      <tr><td><code>6983</code></td><td>PIN blocked</td></tr>
+      <tr><td><code>6984</code></td><td>No PIN set</td></tr>
+      <tr><td><code>6A94</code></td><td>PIN set but not verified in this selection</td></tr>
+      <tr><td><code>6985</code></td><td>Refused in this state: slot used or empty, or a PIN already set</td></tr>
+      <tr><td><code>6700</code> <code>6B00</code></td><td>Wrong length; bad P1 or P2</td></tr>
+      <tr><td><code>6D00</code> <code>6E00</code></td><td>Unknown INS; wrong class byte</td></tr>
+      <tr><td><code>6F00</code></td><td>Crypto failure</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="payment">
+  <h2>How a payment is built</h2>
+  <ul>
+    <li>Each note on the card is a Fedimint mintv2 note whose nonce is one slot's public key. Note amounts are powers of two in msat.</li>
+    <li>The till plans the inputs, the merchant's output and the card's change, balanced to the exact msat. Change goes to fresh keys in free slots.</li>
+    <li>The till builds the transaction with <code>NaiveMultisig</code>. The card signs the 32-byte <code>tx_hash</code>, which covers every input and output, once for each note spent.</li>
+    <li>Before signing, the till records its intent with the registry. After the federation decides, it records the outcome and the card's new notes.</li>
+  </ul>
+</section>
+
+<section id="till">
+  <h2>The till API</h2>
+  <p>The till listens on <code>127.0.0.1:9877</code> by default. Any other address needs a POS token, made by <code>card-sidecar till pair</code> and sent as <code>Authorization: Bearer</code>.</p>
+  <ul>
+    <li><code>POST /v1/charge</code> takes <code>price_msat</code>, an optional <code>client_ref</code> and the PIN. It usually answers in 5 to 20 seconds. A repeated <code>client_ref</code> never spends twice.</li>
+    <li><code>POST /v1/card/balance</code>, <code>GET /v1/sales</code>, <code>GET /v1/status</code> and <code>GET /v1/health</code>.</li>
+    <li><code>POST /v1/cards/precheck</code>, <code>/v1/cards/keySetup</code> and <code>/v1/cards/issue</code> set up and load a card.</li>
+    <li><code>GET /v1/card/link</code> is the WebSocket a POS phone uses to pass card commands to the till.</li>
+    <li>Errors answer <code>{"ok":false,"error","detail"}</code>. Among them: <code>wrong_pin</code>, <code>pin_blocked</code>, <code>insufficient</code>, <code>no_exact_plan</code> (the card cannot hold the change), <code>undecided</code> (the federation has not answered yet) and <code>card_changed</code>.</li>
+  </ul>
+  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/TILL-API.md">till API reference</a> has every field and error, and <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/POS-LINK.md">POS link</a> covers the phone's side.</p>
+</section>
+
+<section id="registry">
+  <h2>The registry</h2>
+  <ul>
+    <li>Operators sign in with a password for a 12-hour token. Operator accounts are made only through a deploy secret, never over HTTP.</li>
+    <li>Tills get their own revocable tokens. A till asks for one with a claim code, and an operator approves it in the provisioner (<a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/TILL-CLAIM.md">till claim</a>).</li>
+    <li>A till or operator sees only its own operator's cards. Any other card answers 404.</li>
+    <li>Each card's management keys are derived from a registry secret and kept there, so only its operator can reinstall or reset it.</li>
+  </ul>
+  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/OPS-PLAN.md">operations plan</a> covers the design and the decisions behind it.</p>
+</section>
+
+<section id="code">
+  <h2>The code</h2>
+  <p>Everything is in <a href="https://github.com/fedimintcard/fedimintcard">fedimintcard/fedimintcard</a>.</p>
+  <ul>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/applet"><code>applet/</code></a>: the Java Card applet, with jCardSim tests.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/bridge"><code>bridge/</code></a>: the real applet in jCardSim behind a small HTTP API on 127.0.0.1.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/host"><code>host/</code></a>: Rust. The <code>card</code> crate talks to a card through a software card, the bridge or PC/SC; <code>sidecar</code> is the till and its command line; <code>fed-tests</code> runs a 4-guardian federation inside <code>cargo test</code>.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/registry"><code>registry/</code></a>: the registry Worker, in TypeScript on a Durable Object.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/apps/provisioner"><code>apps/provisioner/</code></a>: the operator app, React Native for Android and iOS.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/tools/cardkit"><code>tools/cardkit/</code></a>: the GlobalPlatform engine that installs and resets the applet, shared with Cashu Card.</li>
+    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/android-relay"><code>android-relay/</code></a> and <a href="https://github.com/fedimintcard/fedimintcard/tree/main/ios-pos"><code>ios-pos/</code></a>: the POS apps.</li>
+  </ul>
+  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/DESIGN-NOTE.md">design note</a> explains why the card works as it does, and the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/SPIKE.md">spike results</a> hold the first measurements on silicon.</p>
+</section>
+
+<section id="testing">
+  <h2>Testing without a card</h2>
+<pre><span class="c"># the applet in jCardSim, then the bridge</span>
+mvn -B test
+mvn -B package -DskipTests
+java -jar bridge/target/bridge.jar --port 9876
+
+<span class="c"># the host code against a federation in the test process</span>
+cd host &amp;&amp; cargo test --workspace</pre>
+  <p>The bridge takes <code>POST /apdu</code> with <code>{"apdu":"hex"}</code> and answers the response data and status word. Set <code>CARD_BACKEND=soft</code>, <code>bridge</code> or <code>pcsc</code> to choose what the host code talks to.</p>
+</section>
+
+<section id="install">
+  <h2>Installing on a card</h2>
+  <p>Build the CAP file with Ant and the Java Card 3.0.5 SDK, then install it with GlobalPlatformPro on a blank J3R180 with its default keys:</p>
+<pre>cd applet &amp;&amp; ant cap -Djc.sdk=$HOME/.javacard/sdks/jc305u4_kit
+gp --install target/fedimint-card-0.1.cap --applet F0464D434152444D
+gp --create F0464D4341524401 --package F0464D43415244 --applet F0464D4341524401</pre>
+  <ul>
+    <li>Each failed attempt with wrong keys counts toward locking the card for good, so don't retry <code>gp</code> on a card whose keys you don't know.</li>
+    <li>On an ACR122U reader, <code>--bs 64</code> loads reliably.</li>
+    <li>For issuing cards, the provisioner app installs from a phone and replaces the default keys with per-card ones.</li>
+  </ul>
+  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/CAP-BUILD.md">CAP build guide</a> has the pinned SDK, the checks and the findings from silicon.</p>
+</section>
+
+<section id="limits">
+  <h2>Known limits</h2>
+  <ul>
+    <li>8 slots, so a card holds at most 8 notes. A 16-slot build failed to install on the J3R180. Cards with 32 slots are in development.</li>
+    <li>No command reports the card's state, no PIN unblock, and no way for the owner to sign a PIN change.</li>
+    <li>The applet is meant for contactless use. Some commands may stall on a T=0 contact reader.</li>
+    <li>Every payment needs the till, the registry and the federation online.</li>
+  </ul>
+</section>
+
+<section id="security">
+  <h2>Issues and security</h2>
+  <p>Report a bug, or a place where these docs and the code disagree, as a <a href="https://github.com/fedimintcard/fedimintcard/issues">GitHub issue</a>. Report anything that could affect funds privately, through a <a href="https://github.com/fedimintcard/fedimintcard/security/advisories/new">security advisory</a> or to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>, as the <a href="https://github.com/fedimintcard/.github/blob/main/SECURITY.md">security policy</a> asks.</p>
+</section>
+</main>
+
+<footer>
+  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
+  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/developers">Developers</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
+</footer>
+
+</div>
+</body>
+</html>

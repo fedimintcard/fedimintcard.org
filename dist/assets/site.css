@@ -107,6 +107,18 @@ ul.risks details p { margin: -4px 0 0; padding-bottom: 16px; }
   ol.steps, ul.links, ul.risks { grid-template-columns: 1fr; }
   }
 @media (max-width: 420px) { .status { display: none; } }
+/* developer page: code, tables, contents */
+.doc code { font: 500 .9em var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.doc pre { margin: 16px 0 0; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(11, 21, 48, .7); font: 500 14px/1.6 var(--mono); color: var(--ink); overflow-x: auto; }
+.doc pre .c { color: var(--dim); }
+.doc pre.apdu { margin-top: 28px; }
+.doc .toc { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 24px; font-size: 15px; }
+.doc .scroll { overflow-x: auto; margin-top: 16px; }
+.doc table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); color: var(--mist); }
+.doc th { color: var(--ink); font-weight: 700; }
+.doc td:first-child { white-space: nowrap; }
+
 @media (prefers-reduced-motion: no-preference) {
   .cards img { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
   .cards:hover .front { transform: rotate(-3deg) translateY(-6px); }
