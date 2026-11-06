@@ -21,6 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/dev.v1.css">
 </head>
 <body>
 <div class="wrap">
@@ -30,164 +31,193 @@
   <span class="status">Experimental prototype</span>
 </header>
 
-<main class="doc">
-<p class="eyebrow">Experimental / Developers</p>
-<h1>Build on Fedimint Card</h1>
-<p class="lede">The card holds spend keys and a PIN. A till builds each Fedimint transaction, the card signs its hash, and a registry records which notes belong to which card. This page covers the parts, the card's commands and how to test them.</p>
-<ul class="facts" aria-label="At a glance"><li>Experimental</li><li>Applet 2.0</li><li>Java Card 3.0.5</li><li>Fedimint v0.13.0-beta.1</li><li>MIT license</li></ul>
+<main class="dev">
+<section class="dhero">
+  <div>
+    <p class="eyebrow">Developers / applet 2.0</p>
+    <h1>Build on <em>Fedimint Card</em></h1>
+    <p class="lede">The card keeps spend keys and a PIN on its chip. A till builds each Fedimint transaction, the card signs its hash, and a registry records which notes belong to which card. Everything here is open source.</p>
+    <ul class="chips" aria-label="At a glance"><li class="hot">Experimental</li><li>Java Card 3.0.5</li><li>BIP340</li><li>Fedimint v0.13.0-beta.1</li><li>MIT</li></ul>
+  </div>
+  <div class="stage">
+    <img class="cardimg" src="/assets/card-front.webp" alt="" width="1200" height="759">
+    <div class="term" role="img" aria-label="Selecting the card answers 02 00 90 00, applet version 2.0. VERIFY_PIN answers 90 00. SIGN answers a 64-byte signature.">
+      <div class="bar"><i></i><i></i><i></i><span>card · nfc</span></div>
+<pre class="typed" aria-hidden="true"><span class="ln"><span class="c"># select the applet</span></span><span class="ln"><span class="p">&gt;</span> 00 A4 04 00 08 <span class="k">F0 46 4D 43 41 52 44 01</span></span><span class="ln"><span class="p">&lt;</span> <span class="n">02 00</span> <span class="s">90 00</span>  <span class="c">applet 2.0</span></span><span class="ln"><span class="c"># the PIN, then sign the tx hash</span></span><span class="ln"><span class="p">&gt;</span> B0 <span class="k">40</span> 00 00 04 <span class="n">•• •• •• ••</span></span><span class="ln"><span class="p">&lt;</span> <span class="s">90 00</span></span><span class="ln"><span class="p">&gt;</span> B0 <span class="k">12</span> 03 00 20 <span class="n">9f c1 … 4e</span></span><span class="ln"><span class="p">&lt;</span> <span class="n">64-byte signature</span> <span class="s">90 00</span> <span class="cursor"></span></span></pre>
+    </div>
+  </div>
+</section>
 
-<pre class="apdu" aria-label="Selecting the card"><span class="c">Select the card</span>
-&gt; 00 A4 04 00 08 F0 46 4D 43 41 52 44 01
-&lt; 02 00 90 00   <span class="c">applet version 2.0</span></pre>
+<ul class="stats" aria-label="The card in numbers">
+  <li><b>8<small>slots</small></b><span>one key and one note each</span></li>
+  <li><b>~850<small>ms</small></b><span>to sign, on a J3R180</span></li>
+  <li><b>3<small>tries</small></b><span>before the PIN blocks</span></li>
+  <li><b>5.5<small>KB</small></b><span>CAP file, with the PIN</span></li>
+</ul>
 
-<nav class="toc" aria-label="On this page">
-  <a href="#parts">How the parts fit</a><a href="#status">Status</a><a href="#commands">The card's commands</a><a href="#payment">How a payment is built</a><a href="#till">The till API</a><a href="#registry">The registry</a><a href="#code">The code</a><a href="#testing">Testing without a card</a><a href="#install">Installing on a card</a><a href="#limits">Known limits</a><a href="#security">Issues and security</a>
-</nav>
+<div class="dgrid">
+<nav class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#parts">How the parts fit</a></li><li><a href="#status">Status</a></li><li><a href="#commands">The card&#x27;s commands</a></li><li><a href="#payment">A payment, step by step</a></li><li><a href="#till">The till API</a></li><li><a href="#registry">The registry</a></li><li><a href="#code">The code</a></li><li><a href="#try">Try it</a></li><li><a href="#limits">Known limits</a></li><li><a href="#security">Issues and security</a></li></ol></nav>
+<div>
 
-<section id="parts">
-  <h2>How the parts fit</h2>
-  <ul>
-    <li><strong>The card.</strong> A Java Card applet on an NXP J3R180 chip. It makes BIP340 keys in 8 slots, guards signing with a PIN and signs a 32-byte hash. It never sees a transaction or an amount, and no command returns a private key.</li>
-    <li><strong>The till.</strong> <code>card-sidecar</code>, a Rust service built on the Fedimint client. It joins a federation, plans which notes to spend, builds the transaction, collects the card's signatures and submits it. The till's own wallet receives the merchant's ecash.</li>
-    <li><strong>The POS phone.</strong> An Android or iOS app that reads the card over NFC, takes the PIN and passes card commands to the till.</li>
-    <li><strong>The registry.</strong> A Cloudflare Worker at registry.fedimintcard.org that records each card's notes by its short id, the last 4 bytes of its slot-0 public key. Tills read and update it on every payment. See <a href="/privacy">Privacy</a> for what it can see.</li>
-    <li><strong>The provisioner.</strong> The operator's phone app. It installs the applet over NFC, sets each card's management keys and PIN, and approves new tills.</li>
-    <li><strong>The federation.</strong> A Fedimint federation running the mintv2 module. Its guardians check each note's signature and mark it spent.</li>
+<section class="dsec" id="parts"><p class="num">01</p><h2>How the parts fit</h2>
+  <p>One NFC tap connects the holder's card to a merchant's till. The till does the Fedimint work, and the registry keeps track of each card's notes.</p>
+  <div class="panel"><div class="phead"><span>Fedimint Card</span><span>Payments · Issuance</span></div>
+    <div class="diagram"><svg viewBox="0 0 960 396" role="img" aria-labelledby="arch-t arch-d" font-family="Figtree, ui-sans-serif, system-ui, sans-serif">
+<title id="arch-t">How the parts of Fedimint Card connect</title>
+<desc id="arch-d">Payments: the card talks NFC to the POS phone, which links to the till; the till submits transactions to the federation and records notes in the registry. Issuance: the provisioner app installs the applet on the card over NFC and manages keys and tills in the registry.</desc>
+<defs><marker id="ag" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#E1CF89"/></marker><marker id="sg" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#E1CF89"/></marker><marker id="ac" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8EC9F0"/></marker><marker id="sc" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8EC9F0"/></marker><marker id="ao" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8FD3A8"/></marker><marker id="so" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8FD3A8"/></marker><marker id="ad" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#A9B4D0"/></marker><marker id="sd" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#A9B4D0"/></marker>
+<linearGradient id="hot" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3EAC6"/><stop offset=".55" stop-color="#E1CF89"/><stop offset="1" stop-color="#C9A94F"/></linearGradient>
+<filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur in="SourceAlpha" stdDeviation="12"/><feFlood flood-color="#E1CF89" flood-opacity=".35"/><feComposite operator="in" in2="SourceAlpha"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<text x="20" y="34" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#A9B4D0">PAYMENTS</text>
+<line x1="20" y1="228" x2="940" y2="228" stroke="#2A3D72" stroke-dasharray="3 6"/>
+<text x="20" y="254" font-family="ui-monospace,Menlo,monospace" font-size="11" letter-spacing="2" fill="#A9B4D0">ISSUANCE</text>
+<path d="M196 120H244" fill="none" stroke="#E1CF89" stroke-width="2" stroke-linecap="round" marker-end="url(#ag)" marker-start="url(#sg)"/><text x="220" y="108" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#E1CF89" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">NFC</text>
+<path d="M416 120H484" fill="none" stroke="#8EC9F0" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" marker-end="url(#ac)" marker-start="url(#sc)"/><text x="450" y="108" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#8EC9F0" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">card link</text>
+<path d="M676 120H764" fill="none" stroke="#8FD3A8" stroke-width="2" stroke-linecap="round" marker-end="url(#ao)" marker-start="url(#so)"/><text x="720" y="108" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#8FD3A8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">submit tx</text>
+<path d="M600 182V274" fill="none" stroke="#8EC9F0" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" marker-end="url(#ac)" marker-start="url(#sc)"/><text x="612" y="222" text-anchor="start" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#8EC9F0" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">state · intent · outcome</text>
+<path d="M234 328H105V182" fill="none" stroke="#E1CF89" stroke-width="2" stroke-linecap="round" marker-end="url(#ag)" marker-start="url(#sg)"/><text x="117" y="222" text-anchor="start" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#E1CF89" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">install · keys · PIN</text>
+<path d="M396 328H504" fill="none" stroke="#A9B4D0" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" marker-end="url(#ad)" marker-start="url(#sd)"/><text x="450" y="316" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#A9B4D0" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">tills · keys</text>
+<g filter="url(#glow)"><rect x="20" y="60" width="170" height="116" rx="14" fill="url(#hot)" stroke="#E1CF89" stroke-width="1.5"/></g><text x="36" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#0B1530" font-weight="600">HOLDER</text><text x="36" y="114" font-size="19" font-weight="800" fill="#0B1530">Fedimint Card</text><text x="36" y="137" font-size="13" fill="#2A3560">8 slots · keys + PIN</text>
+<g transform="translate(150 78)" fill="none" stroke="#0B1530" stroke-width="1.6" stroke-linecap="round"><path d="M0 4a8 8 0 0 1 0 12"/><path d="M5 0a14 14 0 0 1 0 20"/></g>
+<g><rect x="250" y="60" width="160" height="116" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="266" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">MERCHANT</text><text x="266" y="114" font-size="19" font-weight="800" fill="#EEF1F8">POS phone</text><text x="266" y="137" font-size="13" fill="#A9B4D0">NFC · PIN pad</text>
+<g><rect x="490" y="60" width="180" height="116" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="506" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">MERCHANT</text><text x="506" y="114" font-size="19" font-weight="800" fill="#EEF1F8">Till</text><text x="506" y="137" font-size="13" fill="#A9B4D0">card-sidecar · wallet</text>
+<g><rect x="770" y="60" width="170" height="116" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="786" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">GUARDIANS</text><text x="786" y="114" font-size="19" font-weight="800" fill="#EEF1F8">Federation</text><text x="786" y="137" font-size="13" fill="#A9B4D0">Fedimint mintv2</text>
+<g><rect x="240" y="280" width="150" height="96" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="256" y="306" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">OPERATOR</text><text x="256" y="334" font-size="19" font-weight="800" fill="#EEF1F8">Provisioner</text><text x="256" y="357" font-size="13" fill="#A9B4D0">Android · iOS app</text>
+<g><rect x="510" y="280" width="180" height="96" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="526" y="306" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">CARD ISSUER</text><text x="526" y="334" font-size="19" font-weight="800" fill="#EEF1F8">Registry</text><text x="526" y="357" font-size="13" fill="#A9B4D0">notes by short id</text>
+</svg></div>
+    <div class="legend"><span><i></i>NFC</span><span><i class="web"></i>HTTPS or WebSocket</span><span><i class="fed"></i>Fedimint API</span><span><i class="ops"></i>Operator only</span></div>
+    <p class="swipe">Swipe the diagram sideways to see all of it.</p>
+  </div>
+  <ul class="roles">
+    <li><b>The card <span>holder</span></b>A Java Card applet on an NXP J3R180. It makes keys, guards them with a PIN and signs a 32-byte hash. It never sees an amount, and no command returns a private key.</li>
+    <li><b>POS phone <span>merchant</span></b>Reads the card over NFC, takes the PIN and passes card commands to the till over its card link.</li>
+    <li><b>Till <span>merchant</span></b><code>card-sidecar</code>, a Rust service on the Fedimint client. It plans, builds and submits each payment, and its wallet receives the ecash.</li>
+    <li><b>Registry <span>issuer</span></b>A Cloudflare Worker at registry.fedimintcard.org. It records each card's notes by short id, and sees every balance (<a href="/privacy">privacy</a>).</li>
+    <li><b>Provisioner <span>operator</span></b>The operator's phone app. It installs the applet, sets per-card management keys and the PIN, and approves tills.</li>
+    <li><b>Federation <span>guardians</span></b>A Fedimint federation with the mintv2 module. Its guardians check each note's signature and mark it spent.</li>
   </ul>
 </section>
 
-<section id="status">
-  <h2>Status</h2>
-  <p>Fedimint Card is an experimental prototype. The applet and till have been tested on NXP J3R180 cards with a few phones, and have had no outside security review. A card holds at most 8 notes, so many prices leave change it cannot hold and the till refuses them. Cards with 32 slots are in development.</p>
-  <p>Build against it to learn and give feedback. Read the <a href="/#risks">risks</a> before anyone holds real value on a card.</p>
+<section class="dsec" id="status"><p class="num">02</p><h2>Status</h2>
+  <div class="callout"><span class="ic" aria-hidden="true">!</span><div>
+    <p><strong>An experimental prototype.</strong> The applet and till have been tested on NXP J3R180 cards with a few phones, and have had no outside security review.</p>
+    <p>A card holds at most 8 notes, so many prices leave change it cannot hold and the till refuses them. Cards with 32 slots are in development. Read the <a href="/#risks">risks</a> before anyone holds real value on a card.</p>
+  </div></div>
 </section>
 
-<section id="commands">
-  <h2>The card's commands</h2>
-  <p>AID <code>F0464D4341524401</code>, class byte <code>B0</code>. Slots are numbered 0 to 7 in P1, and P2 is 0 unless noted.</p>
-  <div class="scroll"><table>
-    <thead><tr><th>INS</th><th>Command</th><th>Data</th><th>Answer</th></tr></thead>
-    <tbody>
-      <tr><td><code>10</code></td><td>GEN_KEY</td><td>none. P2 = 1 replaces a used slot</td><td>32-byte x-only public key</td></tr>
-      <tr><td><code>11</code></td><td>GET_PUB</td><td>none</td><td>32-byte x-only public key</td></tr>
-      <tr><td><code>12</code></td><td>SIGN</td><td>32-byte message</td><td>64-byte BIP340 signature</td></tr>
-      <tr><td><code>40</code></td><td>VERIFY_PIN</td><td>PIN, 4 to 8 bytes</td><td>opens a signing session</td></tr>
-      <tr><td><code>41</code></td><td>SET_PIN</td><td>PIN, 4 to 8 bytes</td><td>once per card</td></tr>
-      <tr><td><code>42</code></td><td>CHANGE_PIN</td><td>old PIN then new PIN, same length</td><td>needs VERIFY_PIN; ends the session</td></tr>
-    </tbody>
-  </table></div>
-  <ul>
-    <li>A verified PIN lasts for one selection. Any SELECT or card reset ends it, so VERIFY_PIN and SIGN must happen in the same selection.</li>
+<section class="dsec" id="commands"><p class="num">03</p><h2>The card&#x27;s commands</h2>
+  <p>AID <code>F0464D4341524401</code>, class byte <code>B0</code>. Slots 0 to 7 go in P1, and P2 is 0 unless a command says otherwise.</p>
+  <div class="cmds"><article class="cmd"><header><span class="ins">10</span><h3>GEN_KEY</h3><span class="tag">slot</span></header><p>Makes a new BIP340 key in a slot and answers its public key. P2 = 1 replaces a used slot, which needs the PIN once a PIN is set.</p><pre class="io"><span class="p">&gt;</span> B0 10 <span class="v">ss</span> 00
+<span class="p">&lt;</span> <span class="v">x-only pubkey · 32 B</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">11</span><h3>GET_PUB</h3><span class="tag">slot</span></header><p>Answers the public key in a slot. The slot-0 key's last 4 bytes are the card's short id.</p><pre class="io"><span class="p">&gt;</span> B0 11 <span class="v">ss</span> 00
+<span class="p">&lt;</span> <span class="v">x-only pubkey · 32 B</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">12</span><h3>SIGN</h3><span class="tag pin">needs PIN</span></header><p>Signs a 32-byte message with a slot's key. The till sends the transaction hash, once for each note spent.</p><pre class="io"><span class="p">&gt;</span> B0 12 <span class="v">ss</span> 00 20 <span class="v">tx_hash · 32 B</span>
+<span class="p">&lt;</span> <span class="v">BIP340 signature · 64 B</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">40</span><h3>VERIFY_PIN</h3><span class="tag">session</span></header><p>Checks the PIN and opens a signing session for this selection. Three wrong PINs block the card for good.</p><pre class="io"><span class="p">&gt;</span> B0 40 00 00 <span class="v">Lc</span> <span class="v">PIN · 4–8 B</span>
+<span class="p">&lt;</span> <span class="s">90 00</span>  <span class="p">or 63 CX · 69 83</span></pre></article><article class="cmd"><header><span class="ins">41</span><h3>SET_PIN</h3><span class="tag">once</span></header><p>Sets the first PIN. It works once per card and opens no session.</p><pre class="io"><span class="p">&gt;</span> B0 41 00 00 <span class="v">Lc</span> <span class="v">PIN · 4–8 B</span>
+<span class="p">&lt;</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">42</span><h3>CHANGE_PIN</h3><span class="tag pin">needs PIN</span></header><p>Replaces the PIN with one of the same length, after VERIFY_PIN. It ends the session.</p><pre class="io"><span class="p">&gt;</span> B0 42 00 00 <span class="v">Lc</span> <span class="v">old PIN ‖ new PIN</span>
+<span class="p">&lt;</span> <span class="s">90 00</span></pre></article></div>
+  <h3>Rules a reader has to follow</h3>
+  <ul class="rules">
+    <li>A verified PIN lasts one selection. A SELECT or a reset ends it, so send VERIFY_PIN and SIGN in the same selection.</li>
     <li>Three wrong PINs block the card for good. There is no unblock command.</li>
     <li>SIGN checks the PIN before the slot, so a reader without the PIN cannot learn which slots hold keys.</li>
-    <li>Signatures use fresh randomness, so the same message signed twice gives different signatures.</li>
-    <li>On a J3R180, SIGN takes about 850 ms, GEN_KEY about 125 ms and GET_PUB about 27 ms.</li>
+    <li>Signatures use fresh randomness, so the same message signed twice gives two different signatures.</li>
   </ul>
-  <div class="scroll"><table>
-    <thead><tr><th>Status word</th><th>Meaning</th></tr></thead>
-    <tbody>
-      <tr><td><code>9000</code></td><td>Done</td></tr>
-      <tr><td><code>63CX</code></td><td>Wrong PIN, X tries left</td></tr>
-      <tr><td><code>6983</code></td><td>PIN blocked</td></tr>
-      <tr><td><code>6984</code></td><td>No PIN set</td></tr>
-      <tr><td><code>6A94</code></td><td>PIN set but not verified in this selection</td></tr>
-      <tr><td><code>6985</code></td><td>Refused in this state: slot used or empty, or a PIN already set</td></tr>
-      <tr><td><code>6700</code> <code>6B00</code></td><td>Wrong length; bad P1 or P2</td></tr>
-      <tr><td><code>6D00</code> <code>6E00</code></td><td>Unknown INS; wrong class byte</td></tr>
-      <tr><td><code>6F00</code></td><td>Crypto failure</td></tr>
-    </tbody>
-  </table></div>
+  <h3>Status words</h3>
+  <ul class="sws"><li class="ok"><b>9000</b><span>Done</span></li><li class="pin"><b>63CX</b><span>Wrong PIN, X tries left</span></li><li class="pin"><b>6983</b><span>PIN blocked</span></li><li class="pin"><b>6984</b><span>No PIN set</span></li><li class="pin"><b>6A94</b><span>PIN not verified in this selection</span></li><li class="err"><b>6985</b><span>Refused: slot used or empty, or PIN already set</span></li><li class="err"><b>6700</b><span>Wrong length</span></li><li class="err"><b>6B00</b><span>Bad P1 or P2</span></li><li class="err"><b>6D00</b><span>Unknown INS</span></li><li class="err"><b>6E00</b><span>Wrong class byte</span></li><li class="err"><b>6F00</b><span>Crypto failure</span></li></ul>
 </section>
 
-<section id="payment">
-  <h2>How a payment is built</h2>
-  <ul>
-    <li>Each note on the card is a Fedimint mintv2 note whose nonce is one slot's public key. Note amounts are powers of two in msat.</li>
-    <li>The till plans the inputs, the merchant's output and the card's change, balanced to the exact msat. Change goes to fresh keys in free slots.</li>
-    <li>The till builds the transaction with <code>NaiveMultisig</code>. The card signs the 32-byte <code>tx_hash</code>, which covers every input and output, once for each note spent.</li>
-    <li>Before signing, the till records its intent with the registry. After the federation decides, it records the outcome and the card's new notes.</li>
-  </ul>
+<section class="dsec" id="payment"><p class="num">04</p><h2>A payment, step by step</h2>
+  <p>Every note on the card is a Fedimint mintv2 note whose nonce is one slot's public key, in a power-of-two amount of msat. Gold arrows pass through the POS phone to the card.</p>
+  <div class="panel"><div class="phead"><span>One charge</span><span>13 messages</span></div><div class="diagram"><svg viewBox="0 0 960 700" role="img" aria-labelledby="seq-t" font-family="Figtree, ui-sans-serif, system-ui, sans-serif"><title id="seq-t">The messages in one card payment, in order</title><defs><marker id="ag" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#E1CF89"/></marker><marker id="sg" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#E1CF89"/></marker><marker id="ac" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8EC9F0"/></marker><marker id="sc" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8EC9F0"/></marker><marker id="ao" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8FD3A8"/></marker><marker id="so" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8FD3A8"/></marker><marker id="ad" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#A9B4D0"/></marker><marker id="sd" viewBox="0 0 10 10" refX="1.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#A9B4D0"/></marker></defs><defs><linearGradient id="hot2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F3EAC6"/><stop offset="1" stop-color="#E1CF89"/></linearGradient></defs><line x1="90" y1="62" x2="90" y2="694" stroke="#2A3D72" stroke-dasharray="4 6"/><rect x="22" y="18" width="136" height="42" rx="11" fill="url(#hot2)" stroke="#E1CF89" stroke-width="1.5"/><text x="90" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#0B1530">Card</text><line x1="280" y1="62" x2="280" y2="694" stroke="#2A3D72" stroke-dasharray="4 6"/><rect x="212" y="18" width="136" height="42" rx="11" fill="#13234D" stroke="#33488A" stroke-width="1.5"/><text x="280" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#EEF1F8">POS phone</text><line x1="480" y1="62" x2="480" y2="694" stroke="#2A3D72" stroke-dasharray="4 6"/><rect x="412" y="18" width="136" height="42" rx="11" fill="#13234D" stroke="#33488A" stroke-width="1.5"/><text x="480" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#EEF1F8">Till</text><line x1="680" y1="62" x2="680" y2="694" stroke="#2A3D72" stroke-dasharray="4 6"/><rect x="612" y="18" width="136" height="42" rx="11" fill="#13234D" stroke="#33488A" stroke-width="1.5"/><text x="680" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#EEF1F8">Registry</text><line x1="870" y1="62" x2="870" y2="694" stroke="#2A3D72" stroke-dasharray="4 6"/><rect x="802" y="18" width="136" height="42" rx="11" fill="#13234D" stroke="#33488A" stroke-width="1.5"/><text x="870" y="45" text-anchor="middle" font-size="15" font-weight="800" fill="#EEF1F8">Federation</text><rect x="8" y="80" width="944" height="232" rx="12" fill="#ffffff" fill-opacity=".018" stroke="#2A3D72" stroke-opacity=".6"/><text x="938" y="98" text-anchor="end" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="2" fill="#A9B4D0">READ</text><rect x="8" y="310" width="944" height="186" rx="12" fill="#ffffff" fill-opacity=".018" stroke="#2A3D72" stroke-opacity=".6"/><text x="938" y="328" text-anchor="end" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="2" fill="#A9B4D0">SIGN</text><rect x="8" y="494" width="944" height="186" rx="12" fill="#ffffff" fill-opacity=".018" stroke="#2A3D72" stroke-opacity=".6"/><text x="938" y="512" text-anchor="end" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="2" fill="#A9B4D0">SETTLE</text><line x1="294" y1="110" x2="476" y2="110" stroke="#8EC9F0" stroke-width="2" marker-end="url(#ac)"/><circle cx="280" cy="110" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="280" y="114" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">1</text><text x="380.0" y="101" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">POST /v1/charge</text><line x1="466" y1="156" x2="94" y2="156" stroke="#E1CF89" stroke-width="2" marker-end="url(#ag)"/><circle cx="280" cy="156" r="4.5" fill="#0B1530" stroke="#E1CF89" stroke-width="2"/><circle cx="480" cy="156" r="11" fill="#0B1530" stroke="#E1CF89" stroke-width="1.5"/><text x="480" y="160" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#E1CF89">2</text><text x="285.0" y="147" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">SELECT · GET_PUB 0</text><line x1="104" y1="202" x2="476" y2="202" stroke="#E1CF89" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ag)"/><circle cx="280" cy="202" r="4.5" fill="#0B1530" stroke="#E1CF89" stroke-width="2"/><circle cx="90" cy="202" r="11" fill="#0B1530" stroke="#E1CF89" stroke-width="1.5"/><text x="90" y="206" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#E1CF89">3</text><text x="285.0" y="193" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">slot-0 key → short id</text><line x1="494" y1="248" x2="676" y2="248" stroke="#8EC9F0" stroke-width="2" marker-end="url(#ac)"/><circle cx="480" cy="248" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="480" y="252" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">4</text><text x="580.0" y="239" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">GET /cards/:id/state</text><line x1="666" y1="294" x2="484" y2="294" stroke="#8EC9F0" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ac)"/><circle cx="680" cy="294" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="680" y="298" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">5</text><text x="580.0" y="285" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">notes · free slots</text><path d="M480 334h46v20h-40" fill="none" stroke="#E1CF89" stroke-width="2" marker-end="url(#ag)"/><circle cx="480" cy="334" r="11" fill="#0B1530" stroke="#E1CF89" stroke-width="1.5"/><text x="480" y="338" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#E1CF89">6</text><text x="538" y="349" text-anchor="start" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">plan exact change · build tx</text><line x1="494" y1="386" x2="676" y2="386" stroke="#8EC9F0" stroke-width="2" marker-end="url(#ac)"/><circle cx="480" cy="386" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="480" y="390" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">7</text><text x="580.0" y="377" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">POST intent</text><line x1="466" y1="432" x2="94" y2="432" stroke="#E1CF89" stroke-width="2" marker-end="url(#ag)"/><circle cx="280" cy="432" r="4.5" fill="#0B1530" stroke="#E1CF89" stroke-width="2"/><circle cx="480" cy="432" r="11" fill="#0B1530" stroke="#E1CF89" stroke-width="1.5"/><text x="480" y="436" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#E1CF89">8</text><text x="285.0" y="423" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">VERIFY_PIN · SIGN(tx_hash) × n</text><line x1="104" y1="478" x2="476" y2="478" stroke="#E1CF89" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ag)"/><circle cx="280" cy="478" r="4.5" fill="#0B1530" stroke="#E1CF89" stroke-width="2"/><circle cx="90" cy="478" r="11" fill="#0B1530" stroke="#E1CF89" stroke-width="1.5"/><text x="90" y="482" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#E1CF89">9</text><text x="285.0" y="469" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">one BIP340 signature per note</text><line x1="494" y1="524" x2="866" y2="524" stroke="#8FD3A8" stroke-width="2" marker-end="url(#ao)"/><circle cx="480" cy="524" r="11" fill="#0B1530" stroke="#8FD3A8" stroke-width="1.5"/><text x="480" y="528" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8FD3A8">10</text><text x="675.0" y="515" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">submit transaction</text><line x1="856" y1="570" x2="484" y2="570" stroke="#8FD3A8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ao)"/><circle cx="870" cy="570" r="11" fill="#0B1530" stroke="#8FD3A8" stroke-width="1.5"/><text x="870" y="574" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8FD3A8">11</text><text x="675.0" y="561" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">accepted</text><line x1="494" y1="616" x2="676" y2="616" stroke="#8EC9F0" stroke-width="2" marker-end="url(#ac)"/><circle cx="480" cy="616" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="480" y="620" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">12</text><text x="580.0" y="607" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">POST outcome · new notes</text><line x1="466" y1="662" x2="284" y2="662" stroke="#8EC9F0" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#ac)"/><circle cx="480" cy="662" r="11" fill="#0B1530" stroke="#8EC9F0" stroke-width="1.5"/><text x="480" y="666" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11" font-weight="700" fill="#8EC9F0">13</text><text x="380.0" y="653" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="13" fill="#EEF1F8" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">sale_id</text></svg></div><p class="swipe">Swipe the diagram sideways to see all of it.</p></div>
+  <ol class="steps2">
+    <li><b>Read</b>The till reads the card's short id, then its notes and free slots from the registry.</li>
+    <li><b>Plan</b>It picks the inputs, the merchant's output and the card's change, balanced to the exact msat. Change goes to free slots.</li>
+    <li><b>Sign</b>The transaction uses <code>NaiveMultisig</code>. The card signs its <code>tx_hash</code>, which covers every input and output, once per note.</li>
+    <li><b>Settle</b>The federation checks the signatures. The till records the outcome and the card's new notes.</li>
+  </ol>
 </section>
 
-<section id="till">
-  <h2>The till API</h2>
-  <p>The till listens on <code>127.0.0.1:9877</code> by default. Any other address needs a POS token, made by <code>card-sidecar till pair</code> and sent as <code>Authorization: Bearer</code>.</p>
-  <ul>
-    <li><code>POST /v1/charge</code> takes <code>price_msat</code>, an optional <code>client_ref</code> and the PIN. It usually answers in 5 to 20 seconds. A repeated <code>client_ref</code> never spends twice.</li>
-    <li><code>POST /v1/card/balance</code>, <code>GET /v1/sales</code>, <code>GET /v1/status</code> and <code>GET /v1/health</code>.</li>
-    <li><code>POST /v1/cards/precheck</code>, <code>/v1/cards/keySetup</code> and <code>/v1/cards/issue</code> set up and load a card.</li>
-    <li><code>GET /v1/card/link</code> is the WebSocket a POS phone uses to pass card commands to the till.</li>
-    <li>Errors answer <code>{"ok":false,"error","detail"}</code>. Among them: <code>wrong_pin</code>, <code>pin_blocked</code>, <code>insufficient</code>, <code>no_exact_plan</code> (the card cannot hold the change), <code>undecided</code> (the federation has not answered yet) and <code>card_changed</code>.</li>
-  </ul>
+<section class="dsec" id="till"><p class="num">05</p><h2>The till API</h2>
+  <p>The till listens on <code>127.0.0.1:9877</code>. Any other address needs a POS token from <code>card-sidecar till pair</code>, sent as <code>Authorization: Bearer</code>.</p>
+  <ul class="eps"><li><span class="m post">POST</span><span class="path">/v1/charge</span><span><code>price_msat</code>, optional <code>client_ref</code> and PIN. Answers in 5 to 20 s; a repeated <code>client_ref</code> never spends twice.</span></li><li><span class="m post">POST</span><span class="path">/v1/card/balance</span><span>The tapped card's balance, from the registry.</span></li><li><span class="m post">POST</span><span class="path">/v1/cards/precheck · keySetup · issue</span><span>Check a blank card, make its keys and PIN, and load its first notes.</span></li><li><span class="m ws">WS</span><span class="path">/v1/card/link</span><span>The POS phone's socket. The till sends card commands through it.</span></li><li><span class="m get">GET</span><span class="path">/v1/sales</span><span>The till's sales.</span></li><li><span class="m get">GET</span><span class="path">/v1/status · /v1/health</span><span>Federation, wallet balance, card link and registry state.</span></li></ul>
+  <h3>Errors you should handle</h3>
+  <p>Every error answers <code>{"ok":false,"error","detail"}</code>.</p>
+  <ul class="errs"><li><div class="top"><code>wrong_pin</code><span class="h">403</span></div>The PIN was wrong. The answer says how many tries are left.</li><li><div class="top"><code>pin_blocked</code><span class="h">423</span></div>Three wrong PINs. The card no longer signs.</li><li><div class="top"><code>insufficient</code><span class="h">402</span></div>The card holds less than the price.</li><li><div class="top"><code>no_exact_plan</code><span class="h">422</span></div>The card cannot hold the change this price leaves.</li><li><div class="top"><code>undecided</code><span class="h">202</span></div>The federation has not answered yet. Ask again with the same client_ref.</li><li><div class="top"><code>card_changed</code><span class="h">409</span></div>The card's notes moved since the till read them.</li><li><div class="top"><code>busy</code><span class="h">409</span></div>The till is in another charge.</li><li><div class="top"><code>ops_unreachable</code><span class="h">502</span></div>The registry did not answer.</li></ul>
   <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/TILL-API.md">till API reference</a> has every field and error, and <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/POS-LINK.md">POS link</a> covers the phone's side.</p>
 </section>
 
-<section id="registry">
-  <h2>The registry</h2>
-  <ul>
-    <li>Operators sign in with a password for a 12-hour token. Operator accounts are made only through a deploy secret, never over HTTP.</li>
-    <li>Tills get their own revocable tokens. A till asks for one with a claim code, and an operator approves it in the provisioner (<a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/TILL-CLAIM.md">till claim</a>).</li>
+<section class="dsec" id="registry"><p class="num">06</p><h2>The registry</h2>
+  <ul class="rules">
+    <li>Operators sign in with a password for a 12-hour token. Operator accounts come only from a deploy secret, never over HTTP.</li>
+    <li>Tills get their own revocable tokens. A till asks with a claim code, and an operator approves it in the provisioner.</li>
     <li>A till or operator sees only its own operator's cards. Any other card answers 404.</li>
-    <li>Each card's management keys are derived from a registry secret and kept there, so only its operator can reinstall or reset it.</li>
+    <li>Each card's management keys are derived from a registry secret and kept there, for reinstalling or resetting the card.</li>
   </ul>
-  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/OPS-PLAN.md">operations plan</a> covers the design and the decisions behind it.</p>
+  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/OPS-PLAN.md">operations plan</a> covers the design, and <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/TILL-CLAIM.md">till claim</a> the approval flow.</p>
 </section>
 
-<section id="code">
-  <h2>The code</h2>
-  <p>Everything is in <a href="https://github.com/fedimintcard/fedimintcard">fedimintcard/fedimintcard</a>.</p>
-  <ul>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/applet"><code>applet/</code></a>: the Java Card applet, with jCardSim tests.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/bridge"><code>bridge/</code></a>: the real applet in jCardSim behind a small HTTP API on 127.0.0.1.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/host"><code>host/</code></a>: Rust. The <code>card</code> crate talks to a card through a software card, the bridge or PC/SC; <code>sidecar</code> is the till and its command line; <code>fed-tests</code> runs a 4-guardian federation inside <code>cargo test</code>.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/registry"><code>registry/</code></a>: the registry Worker, in TypeScript on a Durable Object.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/apps/provisioner"><code>apps/provisioner/</code></a>: the operator app, React Native for Android and iOS.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/tools/cardkit"><code>tools/cardkit/</code></a>: the GlobalPlatform engine that installs and resets the applet, shared with Cashu Card.</li>
-    <li><a href="https://github.com/fedimintcard/fedimintcard/tree/main/android-relay"><code>android-relay/</code></a> and <a href="https://github.com/fedimintcard/fedimintcard/tree/main/ios-pos"><code>ios-pos/</code></a>: the POS apps.</li>
-  </ul>
+<section class="dsec" id="code"><p class="num">07</p><h2>The code</h2>
+  <p>Everything is in one repository, <a href="https://github.com/fedimintcard/fedimintcard">fedimintcard/fedimintcard</a>.</p>
+  <div class="repo"><a href="https://github.com/fedimintcard/fedimintcard/tree/main/applet"><span class="d">applet/</span><span class="t">The Java Card applet, with its jCardSim tests.</span><span class="l" style="--c:#E1CF89">Java Card</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/bridge"><span class="d">bridge/</span><span class="t">The real applet in jCardSim behind a small HTTP API, for tests without a card.</span><span class="l" style="--c:#E1CF89">Java</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/host"><span class="d">host/sidecar</span><span class="t">The till service and the card-sidecar command line.</span><span class="l" style="--c:#F0B86E">Rust</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/host"><span class="d">host/card</span><span class="t">The Card trait, with a software card, the bridge and PC/SC behind it.</span><span class="l" style="--c:#F0B86E">Rust</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/host"><span class="d">host/fed-tests</span><span class="t">A 4-guardian federation inside cargo test.</span><span class="l" style="--c:#F0B86E">Rust</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/registry"><span class="d">registry/</span><span class="t">The registry Worker on a SQLite Durable Object.</span><span class="l" style="--c:#8EC9F0">TypeScript</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/apps/provisioner"><span class="d">apps/provisioner/</span><span class="t">The operator app: installs the applet, sets PINs, approves tills.</span><span class="l" style="--c:#8EC9F0">React Native</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/tools/cardkit"><span class="d">tools/cardkit/</span><span class="t">The GlobalPlatform engine that installs and resets the applet.</span><span class="l" style="--c:#8EC9F0">TypeScript</span></a><a href="https://github.com/fedimintcard/fedimintcard/tree/main/android-relay"><span class="d">android-relay/ · ios-pos/</span><span class="t">The POS apps for Android and iOS.</span><span class="l" style="--c:#8FD3A8">Kotlin · Swift</span></a></div>
   <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/DESIGN-NOTE.md">design note</a> explains why the card works as it does, and the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/SPIKE.md">spike results</a> hold the first measurements on silicon.</p>
 </section>
 
-<section id="testing">
-  <h2>Testing without a card</h2>
-<pre><span class="c"># the applet in jCardSim, then the bridge</span>
-mvn -B test
-mvn -B package -DskipTests
-java -jar bridge/target/bridge.jar --port 9876
+<section class="dsec" id="try"><p class="num">08</p><h2>Try it</h2>
+  <p>You can run the real applet and a whole federation without a card. Pick where to start.</p>
+  <div class="tabs">
+    <input type="radio" name="try" id="t1" checked><input type="radio" name="try" id="t2"><input type="radio" name="try" id="t3">
+    <div class="tl"><label for="t1">Simulated card</label><label for="t2">Host and federation</label><label for="t3">A real card</label></div>
+    <div class="pane p1"><div class="term"><div class="bar"><i></i><i></i><i></i><span>repo root</span></div>
+<pre><span class="c"># the applet's tests in jCardSim, then the bridge</span>
+<span class="p">$</span> mvn -B test
+<span class="p">$</span> mvn -B package -DskipTests
+<span class="p">$</span> java -jar bridge/target/bridge.jar --port <span class="n">9876</span>
 
-<span class="c"># the host code against a federation in the test process</span>
-cd host &amp;&amp; cargo test --workspace</pre>
-  <p>The bridge takes <code>POST /apdu</code> with <code>{"apdu":"hex"}</code> and answers the response data and status word. Set <code>CARD_BACKEND=soft</code>, <code>bridge</code> or <code>pcsc</code> to choose what the host code talks to.</p>
+<span class="c"># send it a SELECT</span>
+<span class="p">$</span> curl -s localhost:9876/apdu -d <span class="s">'{"apdu":"00A4040008F0464D4341524401"}'</span>
+<span class="k">{"response":"02009000"}</span></pre></div>
+      <p>The bridge serves <code>POST /apdu</code>, <code>POST /reset</code> and <code>GET /health</code> on 127.0.0.1.</p></div>
+    <div class="pane p2"><div class="term"><div class="bar"><i></i><i></i><i></i><span>host/</span></div>
+<pre><span class="c"># a 4-guardian federation runs inside the tests</span>
+<span class="p">$</span> cd host
+<span class="p">$</span> cargo test --workspace
+
+<span class="c"># choose what the host code talks to</span>
+<span class="p">$</span> CARD_BACKEND=<span class="k">soft</span>   <span class="c"># in-process card</span>
+<span class="p">$</span> CARD_BACKEND=<span class="k">bridge</span> <span class="c"># the jCardSim bridge</span>
+<span class="p">$</span> CARD_BACKEND=<span class="k">pcsc</span>   <span class="c"># a reader, with the pcsc feature</span></pre></div>
+      <p>The host workspace pins Rust 1.91.1 and Fedimint v0.13.0-beta.1.</p></div>
+    <div class="pane p3"><div class="term"><div class="bar"><i></i><i></i><i></i><span>applet/</span></div>
+<pre><span class="c"># build the CAP with the Java Card 3.0.5 SDK</span>
+<span class="p">$</span> ant cap -Djc.sdk=$HOME/.javacard/sdks/jc305u4_kit
+
+<span class="c"># install on a blank J3R180 with its default keys</span>
+<span class="p">$</span> gp --install target/fedimint-card-0.1.cap --applet <span class="k">F0464D434152444D</span>
+<span class="p">$</span> gp --create <span class="k">F0464D4341524401</span> --package <span class="k">F0464D43415244</span> --applet <span class="k">F0464D4341524401</span>
+<span class="p">$</span> gp --apdu 00A4040008F0464D4341524401   <span class="c"># answers 02009000</span></pre></div>
+      <p>Each failed attempt with wrong keys counts toward locking the card for good, so never retry <code>gp</code> on a card whose keys you don't know. On an ACR122U, add <code>--bs 64</code>. To issue cards, use the provisioner app, which replaces the default keys with per-card ones. The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/CAP-BUILD.md">CAP build guide</a> has the details.</p></div>
+  </div>
 </section>
 
-<section id="install">
-  <h2>Installing on a card</h2>
-  <p>Build the CAP file with Ant and the Java Card 3.0.5 SDK, then install it with GlobalPlatformPro on a blank J3R180 with its default keys:</p>
-<pre>cd applet &amp;&amp; ant cap -Djc.sdk=$HOME/.javacard/sdks/jc305u4_kit
-gp --install target/fedimint-card-0.1.cap --applet F0464D434152444D
-gp --create F0464D4341524401 --package F0464D43415244 --applet F0464D4341524401</pre>
-  <ul>
-    <li>Each failed attempt with wrong keys counts toward locking the card for good, so don't retry <code>gp</code> on a card whose keys you don't know.</li>
-    <li>On an ACR122U reader, <code>--bs 64</code> loads reliably.</li>
-    <li>For issuing cards, the provisioner app installs from a phone and replaces the default keys with per-card ones.</li>
-  </ul>
-  <p>The <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/CAP-BUILD.md">CAP build guide</a> has the pinned SDK, the checks and the findings from silicon.</p>
-</section>
-
-<section id="limits">
-  <h2>Known limits</h2>
-  <ul>
-    <li>8 slots, so a card holds at most 8 notes. A 16-slot build failed to install on the J3R180. Cards with 32 slots are in development.</li>
-    <li>No command reports the card's state, no PIN unblock, and no way for the owner to sign a PIN change.</li>
+<section class="dsec" id="limits"><p class="num">09</p><h2>Known limits</h2>
+  <ul class="rules">
+    <li>8 slots, so at most 8 notes. A 16-slot build failed to install on the J3R180. Cards with 32 slots are in development.</li>
+    <li>No command reports the card's state, there is no PIN unblock, and the owner cannot sign a PIN change.</li>
     <li>The applet is meant for contactless use. Some commands may stall on a T=0 contact reader.</li>
     <li>Every payment needs the till, the registry and the federation online.</li>
   </ul>
 </section>
 
-<section id="security">
-  <h2>Issues and security</h2>
-  <p>Report a bug, or a place where these docs and the code disagree, as a <a href="https://github.com/fedimintcard/fedimintcard/issues">GitHub issue</a>. Report anything that could affect funds privately, through a <a href="https://github.com/fedimintcard/fedimintcard/security/advisories/new">security advisory</a> or to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>, as the <a href="https://github.com/fedimintcard/.github/blob/main/SECURITY.md">security policy</a> asks.</p>
+<section class="dsec" id="security"><p class="num">10</p><h2>Issues and security</h2>
+  <p>Report bugs, and places where these docs and the code disagree, as GitHub issues. Report anything that could affect funds privately, as the <a href="https://github.com/fedimintcard/.github/blob/main/SECURITY.md">security policy</a> asks.</p>
+  <div class="ends">
+    <a href="https://github.com/fedimintcard/fedimintcard/issues"><b>Open an issue</b><span>Bugs, questions and doc fixes, in public.</span></a>
+    <a class="sec" href="https://github.com/fedimintcard/fedimintcard/security/advisories/new"><b>Report privately</b><span>Open a GitHub security advisory, or write to hi@fedimintcard.org.</span></a>
+    <a href="https://github.com/fedimintcard/fedimintcard"><b>Read the source</b><span>fedimintcard/fedimintcard, MIT licensed.</span></a>
+  </div>
 </section>
+
+</div></div>
 </main>
 
 <footer>
