@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fedimint Card</title>
-<meta name="description" content="Fedimint Card is an experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
+<meta name="description" content="Fedimint Card is an experimental contactless card that holds the spend keys for Fedimint ecash and pays by tap and PIN.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#2a4fae">
 <link rel="canonical" href="https://fedimintcard.org/">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fedimintcard.org/">
 <meta property="og:title" content="Fedimint Card">
-<meta property="og:description" content="An experimental JavaCard that holds the spend keys for Fedimint ecash notes and pays by tap.">
+<meta property="og:description" content="An experimental contactless card that holds the spend keys for Fedimint ecash and pays by tap and PIN.">
 <meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -34,7 +34,7 @@
 <div class="hero">
   <div>
     <h1>Fedimint ecash on a card.</h1>
-    <p>Fedimint Card is an experimental JavaCard applet. The card holds the spend keys for Fedimint ecash notes and signs each spend itself when you tap it at a till.</p>
+    <p>Fedimint Card puts the spend keys for Fedimint ecash on a contactless chip. You tap the card at a till and type its PIN, and the card signs the payment itself. It is an experimental prototype, tested with small amounts on one federation.</p>
   </div>
   <div class="cards" aria-label="The front and back of a Fedimint Card">
     <img class="back" src="/assets/card-back.webp" alt="Back of the card: a signature panel, a QR code to fedimintcard.org and a short description" width="1200" height="759">
@@ -44,23 +44,24 @@
 
 <section id="film" aria-labelledby="film-title">
   <h2 id="film-title">See it work</h2>
-  <p class="sub">The Fedi app loads the card, the card pays a till by tap, and the federation returns the change.</p>
+  <p class="sub">The card makes its keys on the chip, pays a till by tap, and the federation returns the change.</p>
   <figure class="film">
     <video controls playsinline preload="metadata" poster="/film/fedimint-card-film-1-poster.jpg" aria-label="Fedimint Card film, 48 seconds. The card makes its keys on the chip, the Fedi app loads it with ecash, a till takes a tap, the card signs, and the federation's guardians check the signature and send the change back to the card.">
       <source src="/film/fedimint-card-film-2-720.mp4" type="video/mp4" media="(max-width: 800px)">
       <source src="/film/fedimint-card-film-2.mp4" type="video/mp4">
     </video>
-    <figcaption>48 seconds, with sound. How Fedimint Card is meant to work; the card is an experimental prototype.</figcaption>
+    <figcaption>48 seconds, with sound. The film shows the design. In it the Fedi app loads the card, which the Fedi app cannot do yet. Today a card is loaded at a till by Lightning.</figcaption>
   </figure>
 </section>
 
 <section id="how">
   <h2>How a payment works</h2>
-  <p class="sub">The card does one job: it signs with keys that were made on its chip. The till and the federation do everything else.</p>
+  <p class="sub">The card does one job: it signs with keys that were made on its chip, after its PIN. The till, the card registry and the federation do everything else.</p>
   <ol class="steps">
-    <li><h3>Load the card</h3><p>Ecash from a Fedimint wallet is reissued to keys the card generated on its own chip. The federation issues the new notes to those keys.</p></li>
-    <li><h3>Tap at the till</h3><p>The till builds the transaction and the card signs it with the note's key. The card sees only the 32-byte transaction hash.</p></li>
-    <li><h3>The federation settles</h3><p>The guardians check the signature and mark the note spent. Change goes back to keys on the card in the same transaction.</p></li>
+    <li><h3>Set up the card</h3><p>An operator's phone sets up a blank card in one tap. The chip makes its own spend keys, and the card gets a PIN of 4 to 8 digits.</p></li>
+    <li><h3>Load it at a till</h3><p>Pay a Lightning invoice at the till. The federation issues ecash notes to keys on the card, and the registry records the notes.</p></li>
+    <li><h3>Tap and type the PIN</h3><p>The till builds the payment, and the card signs it after the PIN is typed on the till's phone. The card sees only the 32-byte transaction hash, and each note takes it about a second to sign.</p></li>
+    <li><h3>The federation settles</h3><p>The guardians check the signature and mark the notes spent. Change goes back to fresh keys on the card in the same transaction.</p></li>
   </ol>
 </section>
 
@@ -69,11 +70,14 @@
   <p class="sub">Fedimint Card is an experimental prototype, and its applet and till code have had no outside security review. Keep only small amounts on a card, amounts you can afford to lose.</p>
   <ul class="risks">
     <li><b>The federation holds the bitcoin.</b>Fedimint ecash is a claim on one federation. If enough of its guardians fail or act together against you, the ecash loses its value.</li>
-    <li><b>A lost card can lose its ecash.</b>In today's prototype the spend keys are made on the card and live only there. The planned design lets the owner's phone sweep a lost card.</li>
-    <li><b>The prototype has no PIN or spending limits.</b>Any reader that reaches the card can ask it to sign, or replace a note key, which strands the note. PINs and limits that cap what a skimmer can do are planned.</li>
-    <li><b>Check the amount on the till.</b>The till shows the amount and builds the payment, as with any card. Pay only at tills you trust.</li>
-    <li><b>The till needs a connection.</b>The federation checks each payment as it happens, so a till that cannot reach it cannot take a tap.</li>
-    <li><b>The Fedi app does not load cards yet.</b>The film shows how loading is meant to work. Today a separate wallet on a computer loads the card.</li>
+    <li><b>A lost or wiped card loses its ecash.</b>The spend keys are made on the card and never leave it, so ecash whose keys are gone cannot be recovered. Today's cards still use the chip maker's default management keys, which means anyone with a card reader can delete the card's software.</li>
+    <li><b>The PIN is the only guard.</b>The card signs any payment once the right PIN is entered, and it does not check the amount itself. After three wrong PINs the card stops signing for good.</li>
+    <li><b>Pay only at tills you trust.</b>You type the PIN on the till's phone, and today it reaches the till unencrypted. The till also shows the amount and builds the payment.</li>
+    <li><b>The registry can see balances, and every payment depends on it.</b>Each card's notes are kept in the card registry at registry.fedimintcard.org, which sees every card's balance and payment history (see <a href="/privacy">Privacy</a>). If the registry is down, no card can pay. It is backed up every night, and a restore has not yet been rehearsed.</li>
+    <li><b>Many amounts cannot be paid yet.</b>A card holds at most 8 notes, and the change from a payment has to fit in its free ones. Most prices leave change that does not fit, so the till refuses the payment. Cards that hold 32 notes are in development.</li>
+    <li><b>Top-ups round to card amounts.</b>A top-up is split into at most three notes, up to 100,000 sats, so the amount loaded can differ slightly from the amount asked for.</li>
+    <li><b>Every payment needs a connection.</b>The till, the registry and the federation all take part in each payment, so a till that cannot reach them cannot take a tap.</li>
+    <li><b>The apps are test builds.</b>The card setup app and the till app are not in the App Store or Google Play yet, and the Fedi app cannot load cards.</li>
   </ul>
 </section>
 
