@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy · Fedimint Card</title>
-<meta name="description" content="What fedimintcard.org collects, why, and how to reach us about it.">
+<meta name="description" content="What fedimintcard.org and the card registry collect, why, and how to reach us about it.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#2a4fae">
 <link rel="canonical" href="https://fedimintcard.org/privacy">
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fedimintcard.org/privacy">
 <meta property="og:title" content="Privacy · Fedimint Card">
-<meta property="og:description" content="What fedimintcard.org collects, why, and how to reach us about it.">
+<meta property="og:description" content="What fedimintcard.org and the card registry collect, why, and how to reach us about it.">
 <meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -33,12 +33,12 @@
 <main class="doc">
 <p class="eyebrow">Experimental / Privacy</p>
 <h1>Privacy policy</h1>
-<p class="lede">What fedimintcard.org collects, why, and how to reach us about it.</p>
-<ul class="facts" aria-label="At a glance"><li>Island Bitcoin LLC</li><li>No cookies</li><li>No tracking</li><li>27 Oct 2026</li></ul>
+<p class="lede">What fedimintcard.org and the card registry collect, why, and how to reach us about it.</p>
+<ul class="facts" aria-label="At a glance"><li>Island Bitcoin LLC</li><li>Ecash Card LLC</li><li>No cookies</li><li>No tracking</li><li>Registry sees card balances</li><li>5 Nov 2026</li></ul>
 
 <section>
   <h2>Who this covers</h2>
-  <p>Island Bitcoin LLC runs fedimintcard.org and the hi@fedimintcard.org mailbox. This policy covers those two. Write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a> with any privacy question or request.</p>
+  <p>Island Bitcoin LLC runs fedimintcard.org and the hi@fedimintcard.org mailbox. Ecash Card LLC, a company now being formed, runs the card registry at registry.fedimintcard.org. This policy covers all three. Write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a> with any privacy question or request.</p>
   <p>Fedimint Card is an open source project. Anyone can run the card software, a till or a wallet themselves, and a copy run by someone else follows that operator's own policy.</p>
 </section>
 
@@ -54,13 +54,31 @@
 </section>
 
 <section>
-  <h2>Cards, tills and federations</h2>
-  <p>A Fedimint Card keeps its spend keys on its own chip. Paying with a card happens between the card, a till and a Fedimint federation, and loading it involves a wallet. Those are run by other people under their own policies. Island Bitcoin LLC receives no data about cardholders, balances or payments from cards, tills, wallets or federations.</p>
+  <h2>The card registry</h2>
+  <p>Cards set up with the Fedimint Card apps are recorded in a registry that Ecash Card LLC runs at registry.fedimintcard.org. When a card is tapped, the till asks the registry for the card's notes, and after each payment or top-up it writes the result back.</p>
+  <p>For each card, the registry stores:</p>
+  <ul>
+    <li>a short card ID, taken from the card's first public key, and the public keys of the card's slots;</li>
+    <li>every note on the card: its amount, its state (live, pending or spent) and the data a till needs to spend it with the card;</li>
+    <li>each payment and top-up: its amount, its time, the till that took it and the transaction the federation accepted;</li>
+    <li>when the card was set up, the batch it came from and whether it has a PIN.</li>
+  </ul>
+  <p>So Ecash Card LLC can see each card's balance and its full payment history. The registry cannot spend from a card. Every spend needs a signature from the card's own chip, and the chip signs only after the right PIN is entered.</p>
+  <p>The registry stores no names, email addresses, phone numbers or PINs. A card ID is tied to a person only if someone makes that link, for example whoever handed you the card.</p>
+  <p>An operator who issues cards sees the records of the cards they issued and the payments taken by their tills. A till reads a card's notes, and so its balance, each time the card is tapped there.</p>
+  <p>The registry runs on Cloudflare Workers and saves an encrypted backup to Cloudflare R2 every night. Cloudflare logs each request to it, including the till's IP address.</p>
+  <p>Ecash Card LLC keeps a card's records for as long as the card holds value, because the card cannot be spent without them. To have the records of an empty or reset card removed, write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>.</p>
+  <p>Ecash Card LLC plans to store each card's notes encrypted with a key that only the card can release. Once that ships, the registry will no longer see balances or payment amounts, and this page will say so.</p>
+</section>
+
+<section>
+  <h2>Tills, wallets and federations</h2>
+  <p>A Fedimint Card keeps its spend keys on its own chip. Tills, wallets and Fedimint federations run by other people follow their own policies. The federation sees the amount and time of each payment.</p>
 </section>
 
 <section>
   <h2>Sharing</h2>
-  <p>We sell no personal information. We share it with the services that run these for us, which are Cloudflare (hosting) and Proton (email), and when the law requires it.</p>
+  <p>We sell no personal information. We share it with the services that run these for us, which are Cloudflare (hosting for the site and the registry, and registry backups) and Proton (email), and when the law requires it.</p>
 </section>
 
 <section>
@@ -70,7 +88,7 @@
 
 <section>
   <h2>Changes</h2>
-  <p>Effective 27 October 2026. When this policy changes, the new version is posted here with its date.</p>
+  <p>Effective 5 November 2026. The previous version, dated 27 October 2026, said we received no data about cards or payments. That stopped being true when the registry began holding card records. When this policy changes, the new version is posted here with its date.</p>
 </section>
 </main>
 
