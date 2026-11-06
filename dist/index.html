@@ -69,15 +69,15 @@
   <h2 id="risks-title">Risks to know</h2>
   <p class="sub">Fedimint Card is an experimental prototype, and its applet and till code have had no outside security review. Keep only small amounts on a card, amounts you can afford to lose.</p>
   <ul class="risks">
-    <li><b>The federation holds the bitcoin.</b>Fedimint ecash is a claim on one federation. If enough of its guardians fail or act together against you, the ecash loses its value.</li>
-    <li><b>A lost or wiped card loses its ecash.</b>The spend keys are made on the card and never leave it, so ecash whose keys are gone cannot be recovered. Today's cards still use the chip maker's default management keys, which means anyone with a card reader can delete the card's software.</li>
-    <li><b>The PIN is the only guard.</b>The card signs any payment once the right PIN is entered, and it does not check the amount itself. After three wrong PINs the card stops signing for good.</li>
-    <li><b>Pay only at tills you trust.</b>You type the PIN on the till's phone, and today it reaches the till unencrypted. The till also shows the amount and builds the payment.</li>
-    <li><b>The registry can see balances, and every payment depends on it.</b>Each card's notes are kept in the card registry at registry.fedimintcard.org, which sees every card's balance and payment history (see <a href="/privacy">Privacy</a>). If the registry is down, no card can pay. It is backed up every night, and a restore has not yet been rehearsed.</li>
-    <li><b>Many amounts cannot be paid yet.</b>A card holds at most 8 notes, and the change from a payment has to fit in its free ones. Most prices leave change that does not fit, so the till refuses the payment. Cards that hold 32 notes are in development.</li>
-    <li><b>Top-ups round to card amounts.</b>A top-up is split into at most three notes, up to 100,000 sats, so the amount loaded can differ slightly from the amount asked for.</li>
-    <li><b>Every payment needs a connection.</b>The till, the registry and the federation all take part in each payment, so a till that cannot reach them cannot take a tap.</li>
-    <li><b>The apps are test builds.</b>The card setup app and the till app are not in the App Store or Google Play yet, and the Fedi app cannot load cards.</li>
+    <li><details><summary>The federation holds the bitcoin.</summary><p>Fedimint ecash is a claim on one federation. If enough of its guardians fail or act together against you, the ecash loses its value.</p></details></li>
+    <li><details><summary>A lost or wiped card loses its ecash.</summary><p>The spend keys are made on the card and never leave it, so ecash whose keys are gone cannot be recovered. Today's cards still use the chip maker's default management keys, which means anyone with a card reader can delete the card's software.</p></details></li>
+    <li><details><summary>The PIN is the only guard.</summary><p>The card signs any payment once the right PIN is entered, and it does not check the amount itself. After three wrong PINs the card stops signing for good.</p></details></li>
+    <li><details><summary>Pay only at tills you trust.</summary><p>You type the PIN on the till's phone, and today it reaches the till unencrypted. The till also shows the amount and builds the payment.</p></details></li>
+    <li><details><summary>The registry can see balances, and every payment depends on it.</summary><p>Each card's notes are kept in the card registry at registry.fedimintcard.org, which sees every card's balance and payment history (see <a href="/privacy">Privacy</a>). If the registry is down, no card can pay. It is backed up every night, and a restore has not yet been rehearsed.</p></details></li>
+    <li><details><summary>Many amounts cannot be paid yet.</summary><p>A card holds at most 8 notes, and the change from a payment has to fit in its free ones. Most prices leave change that does not fit, so the till refuses the payment. Cards that hold 32 notes are in development.</p></details></li>
+    <li><details><summary>Top-ups round to card amounts.</summary><p>A top-up is split into at most three notes, up to 100,000 sats, so the amount loaded can differ slightly from the amount asked for.</p></details></li>
+    <li><details><summary>Every payment needs a connection.</summary><p>The till, the registry and the federation all take part in each payment, so a till that cannot reach them cannot take a tap.</p></details></li>
+    <li><details><summary>The apps are test builds.</summary><p>The card setup app and the till app are not in the App Store or Google Play yet, and the Fedi app cannot load cards.</p></details></li>
   </ul>
 </section>
 

@@ -73,10 +73,16 @@ footer p { margin: 0; max-width: 46em; }
 footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 footer nav a { color: var(--mist); }
 
-/* risks: one row per risk, its claim in bold */
-ul.risks { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
-ul.risks li { padding-block: 16px; border-bottom: 1px solid var(--line); color: var(--mist); font-size: 16px; min-width: 0; }
-ul.risks b { display: block; color: var(--ink); font-size: 17px; margin-bottom: 4px; }
+/* risks: one collapsed row per risk; the claim is the summary */
+ul.risks { list-style: none; padding: 0; margin: 28px 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; align-items: start; }
+ul.risks li { border-bottom: 1px solid var(--line); color: var(--mist); font-size: 16px; min-width: 0; }
+ul.risks summary { display: flex; gap: 12px; justify-content: space-between; align-items: baseline; padding-block: 14px; color: var(--ink); font-size: 17px; font-weight: 700; cursor: pointer; list-style: none; }
+ul.risks summary::-webkit-details-marker { display: none; }
+ul.risks summary::after { content: "+"; flex: none; color: var(--gold); font-weight: 400; font-size: 20px; line-height: 1; }
+ul.risks details[open] summary::after { content: "\2212"; }
+ul.risks summary:hover { color: var(--gold-hi); }
+ul.risks summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+ul.risks details p { margin: -4px 0 0; padding-bottom: 16px; }
 
 /* policy and help pages */
 .doc { max-width: 46rem; padding-block: clamp(16px, 4vw, 40px) clamp(40px, 7vw, 72px); }
