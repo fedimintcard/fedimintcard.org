@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fund the work · Fedimint Card</title>
+<meta name="description" content="What a donation to Fedimint Card pays for, how to send one, and where every sat went.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0B1530">
+<link rel="canonical" href="https://fedimintcard.org/fund">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fedimintcard.org/fund">
+<meta property="og:title" content="Fund the work · Fedimint Card">
+<meta property="og:description" content="What a donation to Fedimint Card pays for, how to send one, and where every sat went.">
+<meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.give{margin:16px 0 20px}
+.give-label{margin:0 0 10px}
+.give-amounts{display:flex;flex-wrap:wrap;gap:8px}
+.give-amounts button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(128,128,128,.45);border-radius:10px;padding:9px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;min-width:112px}
+.give-amounts button b{font-weight:600}
+.give-amounts button .give-usd{font-size:.8em;opacity:.7;min-height:1em}
+.give-amounts button[aria-pressed="true"]{outline:2px solid currentColor;outline-offset:1px}
+.give-custom{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.give-custom input{font:inherit;color:inherit;background:transparent;border:1px solid rgba(128,128,128,.45);border-radius:10px;padding:9px 12px;width:230px;max-width:100%}
+.give-custom button{min-width:0;justify-content:center}
+.give-result{margin-top:16px;display:grid;gap:10px;justify-items:start}
+.give-result[hidden]{display:none}
+.give-qr svg{width:220px;height:220px;max-width:100%;background:#fff;border-radius:12px;padding:10px;box-sizing:content-box}
+.give-sats{margin:0;font-weight:600}
+.give-actions{margin:0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.give-actions button{font:inherit;color:inherit;background:transparent;border:1px solid rgba(128,128,128,.45);border-radius:8px;padding:6px 10px;cursor:pointer}
+.give-pr{font-size:.75em;word-break:break-all;opacity:.8;max-width:100%}
+.give-status{margin:8px 0 0;min-height:1.4em;opacity:.85}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
+  <span class="status">Experimental prototype</span>
+</header>
+
+<main class="doc">
+<p class="eyebrow">Experimental / Fund</p>
+<h1>Fund the work</h1>
+<p class="lede">Fedimint Card is built by a very small team and paid for out of pocket. Here is what the next stretch needs, how to send sats toward it, and where every sat went.</p>
+<ul class="facts" aria-label="At a glance"><li>Lightning, on-chain, or a grant</li><li>Every receipt listed below</li><li>MIT, whatever happens</li></ul>
+
+<section>
+  <h2>What it pays for</h2>
+  <p>32-slot cards are in production on one federation. The gap between that and a card other communities can trust is a list of specific jobs, each with a price. Donations go to the first unfunded item on this list, in order.</p>
+  <ul>
+    <li><b>Independent security review of the applet, the till, and the registry.</b> No one outside the project has reviewed the code. The first review will change it, so it comes before cards reach more hands. Unfunded.</li>
+    <li><b>Offline payments to production.</b> Applet 3.0 signs offline and has passed staging drills. Taking it to production means a registry migration, a rehearsed restore, and encrypted notes so the registry stops seeing balances. Unfunded.</li>
+    <li><b>Rotating the chip maker's default management keys.</b> Today anyone with a reader can delete the applet from a card. Per-card keys close that, and need a provisioning change and a key custody plan. Unfunded.</li>
+    <li><b>Printed card runs and tills for new federations.</b> Blank cards cost $6 to $12 each in small lots. A run of 500 printed cards and a few tills puts the card in the hands that will find the next problem. Unfunded.</li>
+    <li><b>Development time.</b> The applet, host, registry, and apps are maintained by people who need to eat. A month of funded time is a month of fixes shipped. Unfunded.</li>
+  </ul>
+  <p class="note">Costs are posted here as quotes come in. When an item is funded, it says so here and the receipts appear under Where it went.</p>
+</section>
+
+<section>
+  <h2>How to send</h2>
+  <p>Donations are received by Island Bitcoin LLC, which runs fedimintcard.org. They are gifts toward the work on this page, with no goods, services, or equity in return, and they are not tax deductible.</p>
+<div class="give" data-site="fedimintcard">
+  <p class="give-label">Pick an amount and scan the code with any Lightning wallet.</p>
+  <div class="give-amounts" role="group" aria-label="Donation amounts"><button type="button" data-sats="2100"><b>2,100 sats</b><span class="give-usd"></span></button><button type="button" data-sats="21000"><b>21,000 sats</b><span class="give-usd"></span></button><button type="button" data-sats="100000"><b>100,000 sats</b><span class="give-usd"></span></button><button type="button" data-sats="500000"><b>500,000 sats</b><span class="give-usd"></span></button><button type="button" data-sats="2100000"><b>2,100,000 sats</b><span class="give-usd"></span></button>
+    <form class="give-custom"><input type="number" inputmode="numeric" min="1000" max="10000000" step="1" placeholder="Other amount in sats" aria-label="Other amount in sats" required><button type="submit">Create invoice</button></form>
+  </div>
+  <div class="give-result" hidden>
+    <div class="give-qr" aria-hidden="true"></div>
+    <p class="give-sats"></p>
+    <p class="give-actions"><a class="give-open" href="#">Open in wallet</a> <button type="button" class="give-copy">Copy invoice</button></p>
+    <code class="give-pr"></code>
+  </div>
+  <p class="give-status" role="status" aria-live="polite"></p>
+</div>
+  <ul>
+    <li><b>Lightning address:</b> <code>ecashcard@islandbitcoin.com</code></li>
+    <li><b>BOLT12:</b> the same address, <code>ecashcard@islandbitcoin.com</code>, resolves over DNS (BIP 353, DNSSEC signed) to this offer: <code style="word-break:break-all">lno1zrxq8pjw7qjlm68mtp7e3yvxee4y5xrgjhhyf2fxhlphpckrvevh50u0q0gsqx3j445ynpk7nfjzdzqnl9zj8vw2cqjyhmkvdcyu62efg5njyqsrggl23h65zv9500zu399ju6p55qah7kyg8zqs9nsl9thpa3guvfxsqv7cgxhpf7h8rawu9kwajz4xpksvnyq46ehjm6fr5fpkx5vtd2lgnzmwa3306ms647jl8tjamg0070xla32wqwj0xvpk7r377pttart5mf75y9ddcnfwlwrw7ehuk4gwmmgj9d5ewqqsnzsmn2gehgn4vr2su9hlvfseeg</code></li>
+    <li><b>On-chain:</b> <code id="onchain-address" data-site="fedimintcard">Loading the current address.</code> Each address is used once and replaced after it receives funds. <a id="onchain-link" href="https://donate.islandbitcoin.com/api/address?site=fedimintcard">The current address as JSON</a>, if it does not appear above.<br><img src="https://donate.islandbitcoin.com/api/address.svg?site=fedimintcard" alt="QR code of the current on-chain donation address" width="180" height="180" loading="lazy" style="margin-top:8px;background:#fff;border-radius:8px;padding:6px"></li>
+  </ul>
+  <p>If you want your gift listed by name, say so in the Lightning message or email <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a> after sending. Gifts are listed as anonymous unless you ask otherwise.</p>
+</section>
+
+<section>
+  <h2>Grants and larger gifts</h2>
+  <p>Foundations and companies that want to fund a whole line item, such as the security review, can write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>. We will send a one-page scope with the deliverable, the reviewer or vendor, the timeline, and what gets published at the end. Reviews and test reports funded this way are published in full in the repository.</p>
+  <p>The work so far was carried by grants from The Reynolds Foundation and the Human Rights Foundation under Project Island Resilience, and by Flash and Island Bitcoin.</p>
+</section>
+
+<section>
+  <h2>Where it went</h2>
+  <p>Every donation and every payment it funded is listed here, newest first. The list is updated by hand when funds move.</p>
+  <ul>
+    <li>No donations received yet. This page went up in November 2026.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Other ways to help</h2>
+  <ul>
+    <li><b>Break it.</b> Audit the <a href="https://github.com/fedimintcard/fedimintcard">applet, host, and registry</a>, and report what you find through a <a href="https://github.com/fedimintcard/fedimintcard/security/advisories/new">GitHub security advisory</a> or to hi@fedimintcard.org.</li>
+    <li><b>Build on it.</b> Port the till, add card support to a wallet, or harden the registry. The <a href="/developers">developer page</a> has the parts and the payment flow.</li>
+    <li><b>Issue cards.</b> Run cards on your own federation with a till and the Setup app, load small amounts, and tell us what fails.</li>
+    <li><b>Talk about it.</b> Questions and ideas go in <a href="https://github.com/fedimintcard/fedimintcard/issues">GitHub issues</a>.</li>
+  </ul>
+</section>
+</main>
+
+<footer>
+  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
+  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/developers">Developers</a><a href="/support">Support</a><a href="/fund">Fund</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
+</footer>
+
+</div>
+<script>(function(){var c=document.getElementById("onchain-address");if(!c)return;fetch("https://donate.islandbitcoin.com/api/address?site="+c.dataset.site,{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){if(d.address){c.textContent=d.address;}else{throw d;}}).catch(function(){c.textContent="The address did not load. Open the JSON link below.";});})();</script>
+<script>
+(function(){
+  var api="https://donate.islandbitcoin.com", box=document.querySelector(".give"); if(!box) return;
+  var site=box.dataset.site, status=box.querySelector(".give-status"), result=box.querySelector(".give-result");
+  var buttons=box.querySelectorAll(".give-amounts > button");
+  fetch(api+"/api/presets",{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+    (d.presets||[]).forEach(function(p){ buttons.forEach(function(b){ if(+b.dataset.sats===p.sats && p.usd!=null){ b.querySelector(".give-usd").textContent="about $"+(p.usd<10?p.usd.toFixed(2):Math.round(p.usd).toLocaleString("en-US")); } }); });
+  }).catch(function(){});
+  function invoice(sats, pressed){
+    buttons.forEach(function(b){ b.setAttribute("aria-pressed", b===pressed ? "true" : "false"); });
+    status.textContent="Creating an invoice for "+sats.toLocaleString("en-US")+" sats."; result.hidden=true;
+    fetch(api+"/api/invoice?site="+encodeURIComponent(site)+"&sats="+sats,{cache:"no-store"}).then(function(r){return r.json()}).then(function(d){
+      if(!d.pr){ throw new Error(d.error||"no invoice"); }
+      box.querySelector(".give-qr").innerHTML=d.qr_svg;
+      box.querySelector(".give-sats").textContent=d.sats.toLocaleString("en-US")+" sats to ecashcard@islandbitcoin.com";
+      box.querySelector(".give-open").href="lightning:"+d.pr;
+      box.querySelector(".give-pr").textContent=d.pr;
+      result.hidden=false; status.textContent="The invoice is valid for 24 hours.";
+    }).catch(function(e){ status.textContent="The invoice could not be created ("+e.message+"). Pay the Lightning address below instead."; });
+  }
+  buttons.forEach(function(b){ b.addEventListener("click", function(){ invoice(+b.dataset.sats, b); }); });
+  box.querySelector(".give-custom").addEventListener("submit", function(e){ e.preventDefault(); var v=parseInt(e.target.querySelector("input").value,10); if(v>=1000&&v<=10000000){ invoice(v,null); } else { status.textContent="Enter an amount between 1,000 and 10,000,000 sats."; } });
+  box.querySelector(".give-copy").addEventListener("click", function(){ var pr=box.querySelector(".give-pr").textContent; navigator.clipboard.writeText(pr).then(function(){ status.textContent="Invoice copied."; }, function(){ status.textContent="Select the invoice text below and copy it."; }); });
+})();
+</script>
+</body>
+</html>
