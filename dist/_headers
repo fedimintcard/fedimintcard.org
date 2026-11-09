@@ -14,8 +14,10 @@
 /assets/site.css
   Cache-Control: public, max-age=300
 
-# The fund page runs the donation card: first-party scripts plus requests to the donations service.
+# The fund page runs the donation card: first-party scripts, requests to the donations service, and the camera for scanning a wallet's QR code.
 /fund
   ! Content-Security-Policy
+  ! Permissions-Policy
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), interest-cohort=()
   Content-Security-Policy: default-src 'self'; img-src 'self'; media-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src https://donate.islandbitcoin.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Cache-Control: public, max-age=300
