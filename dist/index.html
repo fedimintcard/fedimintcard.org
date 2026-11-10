@@ -20,14 +20,14 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=2">
+<link rel="stylesheet" href="/assets/site.css?v=3">
 </head>
 <body>
 <div class="wrap">
 
 <header class="top">
   <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
-  <nav aria-label="Main"><a href="/developers">Developers</a><a href="/support">Support</a><a href="/fund">Fund</a></nav>
+  <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/developers">Developers</a><a href="/support">Support</a><a href="/fund">Fund</a></nav>
   <span class="status">Experimental prototype</span>
 </header>
 
@@ -64,6 +64,31 @@
     <li><h3>Tap and type the PIN</h3><p>The till builds the payment, and the card signs it after the PIN is typed on the till's phone. The card sees only the 32-byte transaction hash, and each note takes it about a second to sign.</p></li>
     <li><h3>The federation settles</h3><p>The guardians check the signature and mark the notes spent. Change goes back to fresh keys on the card in the same transaction.</p></li>
   </ol>
+</section>
+
+<section id="buy" aria-labelledby="buy-title">
+  <p class="kicker">Cards / NXP J3R180</p>
+  <h2 id="buy-title">Where to get cards</h2>
+  <p class="sub">The Fedimint Card applet runs on NXP J3R180 cards (JCOP 4, Java Card 3.0.5) with contact and contactless interfaces, the same cards Cashu Card uses. Buy them unfused and initialized, with the default GlobalPlatform keys, then set them up with the provisioner app or <a href="/developers#try">install the applet from a computer</a>.</p>
+  <div class="buy">
+    <article>
+      <p class="tier">01 / For testing</p>
+      <h3>A few blank cards</h3>
+      <p>This Amazon listing names the dual interface and the default SCP02 keys. A few cards are enough to try the applet with a phone or a desk reader.</p>
+      <ul class="facts"><li>Packs of 2 or 5</li><li>About $9 a card</li><li>Ships from Amazon</li></ul>
+      <a class="go" href="https://www.amazon.com/dp/B0HD7Z44HJ">See the 5-pack on Amazon <span aria-hidden="true">↗</span></a>
+    </article>
+    <article>
+      <p class="tier">02 / In bulk</p>
+      <h3>Blank cards by the hundred</h3>
+      <p>Two suppliers list dual-interface J3R180 cards for volume orders. CardLogix quotes larger orders from California, and Feitian publishes its price breaks on Alibaba.</p>
+      <dl class="vendors">
+        <div><dt>CardLogix</dt><dd>$11.95 a card list price, with volume quotes. Ships from California.</dd><dd><a class="go" href="https://www.cardlogix.com/product/nxp-jcop-4-java-card-3-0-5-classic/">Get a quote <span aria-hidden="true">↗</span></a></dd></div>
+        <div><dt>Feitian on Alibaba</dt><dd>$7.89 a card from 100 and $5.69 from 500. Sold from Beijing.</dd><dd><a class="go" href="https://www.alibaba.com/product-detail/JCOP4-P71-Dual-Interface-Support-SHA_62572399362.html">See it on Alibaba <span aria-hidden="true">↗</span></a></dd></div>
+      </dl>
+    </article>
+  </div>
+  <p class="asof">Prices are as listed on 23 October 2026.</p>
 </section>
 
 <section id="risks" aria-labelledby="risks-title">
