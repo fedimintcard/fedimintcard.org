@@ -50,10 +50,10 @@
 </section>
 
 <ul class="stats" aria-label="The card in numbers">
-  <li><b>8<small>slots</small></b><span>one key and one note each</span></li>
-  <li><b>~850<small>ms</small></b><span>to sign, on a J3R180</span></li>
+  <li><b>32<small>slots</small></b><span>one key and one note each</span></li>
+  <li><b>~950<small>ms</small></b><span>to sign, on a J3R180</span></li>
   <li><b>3<small>tries</small></b><span>before the PIN blocks</span></li>
-  <li><b>5.5<small>KB</small></b><span>CAP file, with the PIN</span></li>
+  <li><b>1<small>signature</small></b><span>per note, then the slot is spent</span></li>
 </ul>
 
 <div class="dgrid">
@@ -79,7 +79,7 @@
 <path d="M600 182V274" fill="none" stroke="#8EC9F0" stroke-width="2" stroke-dasharray="6 5" stroke-linecap="round" marker-end="url(#ac)" marker-start="url(#sc)"/><text x="612" y="222" text-anchor="start" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#8EC9F0" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">state · intent · outcome</text>
 <path d="M234 328H105V182" fill="none" stroke="#E1CF89" stroke-width="2" stroke-linecap="round" marker-end="url(#ag)" marker-start="url(#sg)"/><text x="117" y="222" text-anchor="start" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#E1CF89" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">install · keys · PIN</text>
 <path d="M396 328H504" fill="none" stroke="#A9B4D0" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" marker-end="url(#ad)" marker-start="url(#sd)"/><text x="450" y="316" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="11.5" fill="#A9B4D0" stroke="#0F1C40" stroke-width="5" paint-order="stroke" stroke-linejoin="round">tills · keys</text>
-<g filter="url(#glow)"><rect x="20" y="60" width="170" height="116" rx="14" fill="url(#hot)" stroke="#E1CF89" stroke-width="1.5"/></g><text x="36" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#0B1530" font-weight="600">HOLDER</text><text x="36" y="114" font-size="19" font-weight="800" fill="#0B1530">Fedimint Card</text><text x="36" y="137" font-size="13" fill="#2A3560">8 slots · keys + PIN</text>
+<g filter="url(#glow)"><rect x="20" y="60" width="170" height="116" rx="14" fill="url(#hot)" stroke="#E1CF89" stroke-width="1.5"/></g><text x="36" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#0B1530" font-weight="600">HOLDER</text><text x="36" y="114" font-size="19" font-weight="800" fill="#0B1530">Fedimint Card</text><text x="36" y="137" font-size="13" fill="#2A3560">32 slots · keys + PIN</text>
 <g transform="translate(150 78)" fill="none" stroke="#0B1530" stroke-width="1.6" stroke-linecap="round"><path d="M0 4a8 8 0 0 1 0 12"/><path d="M5 0a14 14 0 0 1 0 20"/></g>
 <g><rect x="250" y="60" width="160" height="116" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="266" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">MERCHANT</text><text x="266" y="114" font-size="19" font-weight="800" fill="#EEF1F8">POS phone</text><text x="266" y="137" font-size="13" fill="#A9B4D0">NFC · PIN pad</text>
 <g><rect x="490" y="60" width="180" height="116" rx="14" fill="#13234D" stroke="#33488A" stroke-width="1.5"/></g><text x="506" y="86" font-family="ui-monospace,Menlo,monospace" font-size="10.5" letter-spacing="1.6" fill="#E1CF89" font-weight="600">MERCHANT</text><text x="506" y="114" font-size="19" font-weight="800" fill="#EEF1F8">Till</text><text x="506" y="137" font-size="13" fill="#A9B4D0">card-sidecar · wallet</text>
@@ -91,7 +91,7 @@
     <p class="swipe">Swipe the diagram sideways to see all of it.</p>
   </div>
   <ul class="roles">
-    <li><b>The card <span>holder</span></b>A Java Card applet on an NXP J3R180. It makes keys, guards them with a PIN and signs a 32-byte hash. It never sees an amount, and no command returns a private key.</li>
+    <li><b>The card <span>holder</span></b>A Java Card applet on an NXP J3R180. It makes keys, guards them with a PIN and signs a 32-byte hash. With applet 3.0 it also keeps each note's amount for the offline limit. No command returns a private key.</li>
     <li><b>POS phone <span>merchant</span></b>Reads the card over NFC, takes the PIN and passes card commands to the till over its card link.</li>
     <li><b>Till <span>merchant</span></b><code>card-sidecar</code>, a Rust service on the Fedimint client. It plans, builds and submits each payment, and its wallet receives the ecash.</li>
     <li><b>Registry <span>issuer</span></b>A Cloudflare Worker at registry.fedimintcard.org. It records each card's notes by short id, and sees every balance (<a href="/privacy">privacy</a>).</li>
@@ -103,12 +103,12 @@
 <section class="dsec" id="status"><p class="num">02</p><h2>Status</h2>
   <div class="callout"><span class="ic" aria-hidden="true">!</span><div>
     <p><strong>An experimental prototype.</strong> The applet and till have been tested on NXP J3R180 cards with a few phones, and have had no outside security review.</p>
-    <p>A card holds at most 8 notes, so many prices leave change it cannot hold and the till refuses them. Cards with 32 slots are in development. Read the <a href="/#risks">risks</a> before anyone holds real value on a card.</p>
+    <p>A card holds up to 32 notes, and with applet 3.0 a till takes taps offline and settles them when it reconnects. Some prices leave change the card cannot hold, and the till refuses them. Read the <a href="/#risks">risks</a> before anyone holds real value on a card.</p>
   </div></div>
 </section>
 
 <section class="dsec" id="commands"><p class="num">03</p><h2>The card&#x27;s commands</h2>
-  <p>AID <code>F0464D4341524401</code>, class byte <code>B0</code>. Slots 0 to 7 go in P1, and P2 is 0 unless a command says otherwise.</p>
+  <p>AID <code>F0464D4341524401</code>, class byte <code>B0</code>. Slots 0 to 31 go in P1 (0 to 7 on the first 8-slot cards), and P2 is 0 unless a command says otherwise. These are the commands every version answers. Applet 3.0 adds note states, attestation and an offline limit, documented in <a href="https://github.com/fedimintcard/fedimintcard/blob/main/docs/OFFLINE-PROTOCOL.md">the offline protocol</a>.</p>
   <div class="cmds"><article class="cmd"><header><span class="ins">10</span><h3>GEN_KEY</h3><span class="tag">slot</span></header><p>Makes a new BIP340 key in a slot and answers its public key. P2 = 1 replaces a used slot, which needs the PIN once a PIN is set.</p><pre class="io"><span class="p">&gt;</span> B0 10 <span class="v">ss</span> 00
 <span class="p">&lt;</span> <span class="v">x-only pubkey · 32 B</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">11</span><h3>GET_PUB</h3><span class="tag">slot</span></header><p>Answers the public key in a slot. The slot-0 key's last 4 bytes are the card's short id.</p><pre class="io"><span class="p">&gt;</span> B0 11 <span class="v">ss</span> 00
 <span class="p">&lt;</span> <span class="v">x-only pubkey · 32 B</span> <span class="s">90 00</span></pre></article><article class="cmd"><header><span class="ins">12</span><h3>SIGN</h3><span class="tag pin">needs PIN</span></header><p>Signs a 32-byte message with a slot's key. The till sends the transaction hash, once for each note spent.</p><pre class="io"><span class="p">&gt;</span> B0 12 <span class="v">ss</span> 00 20 <span class="v">tx_hash · 32 B</span>
@@ -202,10 +202,10 @@
 
 <section class="dsec" id="limits"><p class="num">09</p><h2>Known limits</h2>
   <ul class="rules">
-    <li>8 slots, so at most 8 notes. A 16-slot build failed to install on the J3R180. Cards with 32 slots are in development.</li>
-    <li>No command reports the card's state, there is no PIN unblock, and the owner cannot sign a PIN change.</li>
+    <li>32 slots, so at most 32 notes, and a payment's change has to fit in the free ones.</li>
+    <li>There is no PIN unblock, and the owner cannot sign a PIN change.</li>
     <li>The applet is meant for contactless use. Some commands may stall on a T=0 contact reader.</li>
-    <li>Every payment needs the till, the registry and the federation online.</li>
+    <li>Offline payments need applet 3.0 and settle when the till reconnects. The POS phone needs to reach its till.</li>
   </ul>
 </section>
 
