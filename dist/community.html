@@ -3,130 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bring the card to your community · Fedimint Card</title>
+<title>Community pilot guide · Fedimint Card</title>
 <meta name="description" content="What a community needs to run Fedimint Card, two ways to start, and the steps of a first pilot.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0B1530">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f6f7f9">
 <link rel="canonical" href="https://fedimintcard.org/community">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://fedimintcard.org/community">
-<meta property="og:title" content="Bring the card to your community · Fedimint Card">
+<meta property="og:title" content="Community pilot guide · Fedimint Card">
 <meta property="og:description" content="What a community needs to run Fedimint Card, two ways to start, and the steps of a first pilot.">
 <meta property="og:image" content="https://fedimintcard.org/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=4">
+<link rel="stylesheet" href="/assets/community.css?v=1">
 </head>
+
 <body>
-<div class="wrap">
-
-<header class="top">
-  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
+<a class="skip" href="#main">Skip to community guide</a>
+<header class="mast"><div class="rail mast-inner">
+  <a class="wordmark" href="/" aria-label="Fedimint Card home"><img src="/assets/mark-on-paper.svg" width="33" height="26" alt=""><span><strong>fedimint</strong>card</span></a>
   <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/downloads">Downloads</a><a href="/developers">Developers</a><a href="/fund">Fund</a></nav>
-  <span class="status">Experimental prototype</span>
-</header>
+</div></header>
+<main id="main" class="rail">
+  <div class="cover">
+    <div class="cover-intro">
+      <p class="edition">Card 4.0 <span aria-hidden="true">/</span> Community guide</p>
+      <h1>Bring the card to your <em>community.</em></h1>
+      <p class="lead">Start with one merchant and a few cards. This guide takes your federation from choosing a till to settling its first sale.</p>
+      <a class="cover-action" href="#pilot">Plan your first sale</a>
+    </div>
+    <figure class="film">
+      <a class="film-link" href="/film/fedimint-card-pos-demo.mp4" aria-label="Watch the Fedimint Card prototype payment demo">
+        <img src="/assets/community-pilot.webp" alt="A hand holds a chip card to a phone displaying 25 sats." width="720" height="480" fetchpriority="high">
+        <span class="film-caption"><span class="play" aria-hidden="true"></span><span>Watch a card payment<small>Prototype demo</small></span></span>
+      </a>
+    </figure>
+  </div>
+<nav class="guide-nav" aria-label="On this page">
+  <a href="#start">Get cards</a>
+  <a href="#kit">Pilot kit</a>
+  <a href="#pilot">First sale</a>
+  <a href="#costs">Costs &amp; care</a>
+</nav>
 
-<main class="doc">
-<p class="eyebrow">Experimental / Communities</p>
-<h1>Bring the card to your community</h1>
-<p class="lede">What a community needs to run Fedimint Card, two ways to start, and the steps of a first pilot. Fedimint Card is an experimental prototype, tested with small amounts on one federation.</p>
-<ul class="facts" aria-label="At a glance"><li>Federation</li><li>Till</li><li>POS app</li><li>Cards</li><li>Setup app</li></ul>
-
-<section>
-  <h2>What you need</h2>
-  <ul>
-    <li><strong>A federation.</strong> Your community’s Fedimint federation with a Bitcoin mint v1 or v2 module. Its guardians check each payment and mark the notes spent. Your guardians run it.</li>
-    <li><strong>A till.</strong> A <a href="/downloads#till">Card 4.0 merchant till</a> with a wallet in your federation. It builds each payment and sends it to the federation, and its wallet receives what merchants are paid. It sits on the merchants' side, and your community decides who runs it.</li>
-    <li><strong>The POS app.</strong> Use the <a href="/downloads#pos">signed Card 4.0 Android POS app</a> for a new install. The store channels are <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Google Play</a>, <a href="https://testflight.apple.com/join/X5r1fege">TestFlight</a>. The app reads the card by NFC, takes the PIN and passes the card's answers to the till. Each merchant installs it.</li>
-    <li><strong>Cards.</strong> Compatible contactless cards with the Card 4.x applet, such as the J3R180 or J3R452. Each holder gets one card and its PIN.</li>
-    <li><strong>The Setup app.</strong> Fedimint Card Setup, on the phone of the person who issues cards (<a href="https://play.google.com/store/apps/details?id=org.fedimintcard.provisioner">Google Play</a>, <a href="https://testflight.apple.com/join/w7GBYdvT">TestFlight</a>). It sets up a blank card in one tap, and it approves your tills.</li>
-  </ul>
-  <p>Check with your issuer that your cards and registry support Card 4.0 and your federation’s mint. The till uses registry.fedimintcard.org by default. The registry records the notes associated with each card (see <a href="/privacy">Privacy</a>). The Setup app signs in to an operator account on the registry, and only the people who run the registry can make one.</p>
-</section>
-
-<section>
-  <h2>Two ways to start</h2>
-  <div class="buy">
-    <article>
-      <p class="tier">01 / Ready-made</p>
-      <h3>Cards set up for your federation</h3>
-      <p>Cards are set up for your federation and shipped to you. They are offered at cost to pilot communities.</p>
-      <a class="go" href="mailto:hi@fedimintcard.org">Write to hi@fedimintcard.org</a>
+<section class="guide-section" id="start" aria-labelledby="start-heading">
+  <div class="section-head">
+    <h2 id="start-heading">Two ways to get cards</h2>
+  </div>
+  <div class="routes">
+    <article class="route ready">
+      <img class="route-card" src="/assets/card-front.webp" alt="" loading="lazy" width="340" height="215">
+      <h3>Get ready-made cards</h3>
+      <p>Pilot communities can order cards at cost, set up for their federation and shipped to them. Tell us which federation you use and how many people will take part.</p>
+      <a class="route-action" href="mailto:hi@fedimintcard.org">Ask about pilot cards</a>
     </article>
-    <article>
-      <p class="tier">02 / Do it yourself</p>
-      <h3>Blank cards and the open guides</h3>
-      <p>Buy blank J3R180 cards and set them up with the Setup app. The guides and the code are public, starting from the <a href="/developers">developers page</a>.</p>
-      <a class="go" href="/#buy">Where to get blank cards</a>
+    <article class="route diy">
+      <img class="route-card" src="/assets/card-back.webp" alt="" loading="lazy" width="340" height="215">
+      <h3>Set up your own cards</h3>
+      <p>Start with compatible blank cards such as the J3R180 or J3R452. Your issuer uses the Setup app on an NFC phone to prepare a batch for your federation.</p>
+      <a class="route-action" href="/#buy">Find blank cards</a>
     </article>
   </div>
 </section>
 
-<section>
-  <h2>A pilot, step by step</h2>
-  <ol class="steps" style="grid-template-columns: minmax(0, 1fr); margin-top: 20px">
-    <li><h3>Decide who runs the till</h3><p>Choose the person who will run the till. Its wallet receives what merchants are paid. To connect the till to the registry, the till shows a QR code and a short code, and the card issuer approves it in the Setup app under Settings, then Tills, then Add a till.</p></li>
-    <li><h3>Put the POS app on the first merchants' phones</h3><p>Install Fedimint Card POS on each merchant's phone and pair it with the till. The till shows a pairing QR code, and the merchant scans it with Pair with till in the POS settings. The phone needs a connection to pair and sync.</p></li>
-    <li><h3>Get cards</h3><p>Use ready-made cards, or set up blank cards with the Setup app, one tap per card, in batches. Each card makes its own keys on its chip and gets a PIN of 4 to 8 digits.</p></li>
-    <li><h3>Hand out cards with their PINs</h3><p>Give each holder their card and its PIN. Ask holders to keep their PIN private and carry only small amounts.</p></li>
-    <li><h3>Top up</h3><p>On the POS, read the card and tap Top up card. Enter an amount in sats and tap <strong>Review top-up</strong>. The holder checks the card credit, fixed top-up fee and total, then chooses <strong>Show payment QR</strong>. After paying that invoice, tap the card to load the quoted credit.</p></li>
-    <li><h3>Take the first payment</h3><p>Tap Charge card and type the price. The holder types the PIN on the merchant's phone and taps the card. The card signs the payment and the federation settles it.</p></li>
-    <li><h3>Check after the first day</h3><p>Look at the till's list of sales and its status, which shows the federation, the wallet balance, the card link and the registry. A disconnected POS phone keeps eligible offline payments until it can sync. Reconnect each phone and confirm that its payments settle. Follow the <a href="/downloads#till">till backup guide</a> for its wallet and payment records.</p></li>
+<section class="guide-section" id="kit" aria-labelledby="kit-heading">
+  <div class="section-head">
+    <h2 id="kit-heading">Your pilot kit</h2>
+    <p>Start with one merchant. Agree who will run the till and who will issue cards before you hand out the first one.</p>
+  </div>
+  <dl class="kit-list">
+    <div><dt>Federation</dt><dd>Your guardians run a Fedimint federation with a bitcoin mint v1 or v2. It holds the bitcoin and settles payments.</dd></div>
+    <div><dt>Merchant till</dt><dd>The till runs on a server and receives sales into its own federation wallet. The operator installs the <a href="/downloads#till">Card 4.0 till</a> and backs up its wallet and records.</dd></div>
+    <div><dt>Merchant phone</dt><dd>Each merchant pairs the <a href="/downloads#pos">POS app</a> on an NFC phone with the till. The phone reads balances, loads cards and takes payments.</dd></div>
+    <div><dt>Cards &amp; issuer phone</dt><dd>Each holder gets a card and PIN. The issuer uses <a href="/downloads#setup">Card Setup</a> on an NFC phone to prepare blank cards and approve tills.</dd></div>
+    <div><dt>Card registry</dt><dd>Ask the registry operator for a Setup account. Setup and the till must use the same Card 4.0 registry, and the cards and till must match on federation and mint.</dd></div>
+  </dl>
+</section>
+
+<section class="guide-section" id="pilot" aria-labelledby="pilot-heading">
+  <div class="section-head">
+    <h2 id="pilot-heading">Your first sale</h2>
+    <p>Walk through a small payment together. Open each step as you go.</p>
+  </div>
+  <ol class="pilot-list">
+    <li><details open><summary>Connect and approve the till</summary><p>Join your federation from the till, then connect it to the Card 4.0 registry your issuer uses. In Setup, open <strong>Settings › Tills › Add a till</strong> and follow the prompts using the QR or short code shown by the till.</p></details></li>
+    <li><details><summary>Pair a merchant’s phone</summary><p>Show the till’s POS pairing QR. On the merchant’s phone, open POS settings and choose <strong>Pair with till</strong>. Keep the phone online and confirm it has fetched an offline kit before testing an offline sale.</p></details></li>
+    <li><details><summary>Give the holder a card and PIN</summary><p>Use a ready-made card or tap a blank card in Setup. Each card creates its keys on the chip. Give the holder their card and its PIN of 4 to 8 digits.</p></details></li>
+    <li><details><summary>Top up the card</summary><p>Read the card in POS, choose <strong>Top up card</strong>, enter an amount in sats and tap <strong>Review top-up</strong>. Check the card credit, fee and total. Choose <strong>Show payment QR</strong>, pay the Lightning invoice once, then tap the card to load the quoted amount.</p></details></li>
+    <li><details><summary>Take a payment</summary><p>In POS, choose <strong>Charge card</strong> and enter the price. The holder enters their PIN on the merchant’s phone and taps the card. Check the result on the phone before starting another sale.</p></details></li>
+    <li><details><summary>Reconcile the day’s sales</summary><p>Reconnect any phones used offline so queued payments can settle. Check the sales and wallet balance in till admin, confirm the phones have finished syncing, and follow the <a href="/downloads#till">backup instructions for your till</a>.</p></details></li>
   </ol>
 </section>
 
-<section>
-  <h2>What it costs to run</h2>
-  <ul>
-    <li><strong>Cards.</strong> One blank J3R180 card for each holder. <a href="/#buy">Where to get cards</a> lists prices as they were on 23 October 2026.</li>
-    <li><strong>A machine for the till.</strong> A server that runs the till and its wallet. Install the <a href="/downloads#till">StartOS package or Docker image</a>.</li>
-    <li><strong>Phones.</strong> An NFC phone for each merchant, and one for the person who sets up cards.</li>
-    <li><strong>The federation's fees.</strong> The POS quotes a fixed customer fee that covers receiving the Lightning payment and loading the card. Any fee left after costs stays with the merchant. The sending wallet may quote its own routing fee.</li>
-  </ul>
+<section class="guide-section" id="costs" aria-labelledby="costs-heading">
+  <div class="section-head"><h2 id="costs-heading">Costs &amp; card care</h2></div>
+  <div class="guidance">
+    <article><h3>What to budget for</h3>
+      <p>Allow for one card per holder, a server for the till, and NFC phones for merchants and the issuer. See the <a href="/#buy">card buying guide</a> for example prices.</p>
+      <p>A new till can start with an empty wallet. Each top-up quotes a fixed fee to cover receiving the Lightning payment and loading the card. Any fee left after costs stays with the merchant. The sending wallet may charge a routing fee.</p>
+    </article>
+    <article><h3>What holders should know</h3>
+      <p>For this experimental pilot, carry only amounts you can afford to lose. A lost or wiped card loses its eCash. Keep your PIN private and enter it only at a till you trust.</p>
+      <p>The registry can see card balances. Load the card through POS. The Fedi wallet app cannot write a top-up to the card. <a href="/privacy">Read about card privacy</a>.</p>
+    </article>
+    <article><h3>What merchants should know</h3>
+      <p>The apps are in beta. The notes on a card limit which amounts it can pay. Top-ups round to amounts the card can hold, so check the quoted credit with the holder.</p>
+      <p>Offline sales settle after the phone reconnects. The project’s <a href="/#risks">pilot risk guide</a> covers settlement and the limits of testing.</p>
+    </article>
+  </div>
 </section>
 
-<section>
-  <h2>What to tell holders and merchants</h2>
-  <p>Fedimint Card is an experimental prototype, and its applet and till code have had no outside security review. Keep only small amounts on a card, amounts you can afford to lose.</p>
-  <p><strong>For holders</strong></p>
-  <ul>
-    <li>The federation holds the bitcoin.</li>
-    <li>A lost or wiped card loses its eCash.</li>
-    <li>Keep the card’s PIN private.</li>
-    <li>Pay only at tills you trust.</li>
-    <li>The registry can see balances.</li>
-    <li>The Fedi app cannot load cards.</li>
-  </ul>
-  <p><strong>For merchants</strong></p>
-  <ul>
-    <li>Some amounts cannot be paid.</li>
-    <li>Top-ups round to card amounts.</li>
-    <li>Offline payments settle later.</li>
-    <li>The apps are public betas.</li>
-  </ul>
-  <p><a href="/#risks">Risks to know</a> explains each one.</p>
+<section class="help-band" aria-labelledby="help-heading">
+  <div><h2 id="help-heading">Help with your pilot</h2><p>For cards or questions about getting started, write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>.</p></div>
+  <nav aria-label="Pilot help"><a href="/support">Contact support</a><a href="/developers">Technical guides</a><a href="https://github.com/fedimintcard/fedimintcard">Source code</a></nav>
 </section>
 
-<section>
-  <h2>Where to get help</h2>
-  <ul class="links" style="padding-left: 0">
-    <li><a href="mailto:hi@fedimintcard.org"><b>Email</b><span>hi@fedimintcard.org</span></a></li>
-    <li style="margin-top: 0"><a href="/support"><b>Support</b><span>Questions, bugs and security reports</span></a></li>
-    <li style="margin-top: 0"><a href="https://github.com/fedimintcard/fedimintcard"><b>Source</b><span>The code and its guides on GitHub</span></a></li>
-  </ul>
-</section>
 </main>
-
-<footer>
-  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
-  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/community" aria-current="page">Communities</a><a href="/developers">Developers</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
-</footer>
-
-</div>
+<footer class="footer"><div class="rail foot-inner">
+  <a class="wordmark" href="/" aria-label="Fedimint Card home"><img src="/assets/mark-on-paper.svg" width="28" height="22" alt=""><span><strong>fedimint</strong>card</span></a>
+  <nav aria-label="Site"><a href="/downloads">Downloads</a><a href="/community" aria-current="page">Communities</a><a href="/fund">Fund</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
+</div><div class="rail foot-meta">An independent open source project built on Fedimint. <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT license</a></div></footer>
 </body>
 </html>
