@@ -44,12 +44,14 @@
 <section id="till">
   <h2>Merchant till</h2>
   <p>Till 0.1.0 accepts Card 4.x. It supports Bitcoin mint v1 and v2 and requires a Card 4.0 registry that supports your federation’s mint. Keep a compatible till available for holders of older cards.</p>
+  <p>Before joining a federation or issuing cards, confirm with your registry operator that Card 4.0 is enabled for your federation’s mint. The till defaults to <code>registry.fedimintcard.org</code>. Choose the same registry in Setup and on the till.</p>
   <div class="buy">
     <article>
       <h3>StartOS</h3>
       <p>Download revision 12 for your server’s processor.</p>
       <p><a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-aarch64.s9pk">ARM64 package</a> · <a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-x86_64.s9pk">Intel / AMD package</a></p>
-      <a class="go" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/SHA256SUMS">StartOS checksums</a>
+      <p><a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/SHA256SUMS">StartOS checksums</a></p>
+      <a class="go" href="https://github.com/bobodread876/fedimintcard-till-startos/blob/main/instructions.md">Install on StartOS</a>
     </article>
     <article>
       <h3>Docker</h3>
@@ -57,8 +59,12 @@
       <a class="go" href="https://github.com/fedimintcard/fedimintcard/blob/till-v0.1.0/docs/TILL-DOCKER.md">Install with Docker</a>
     </article>
   </div>
-  <p>By default, the till connects to <code>registry.fedimintcard.org</code>. If your issuer runs a different compatible registry, configure its HTTPS address in your till settings. The <a href="https://github.com/fedimintcard/fedimintcard/blob/till-v0.1.0/docs/TILL-DOCKER.md">installation guide</a> covers registry settings and backups.</p>
   <p><a href="https://github.com/fedimintcard/fedimintcard/releases/tag/till-v0.1.0">Release notes and all files</a></p>
+</section>
+<section id="setup">
+  <h2>Card Setup for issuers</h2>
+  <p>Fedimint Card Setup prepares cards and approves tills. The Android app is on <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.provisioner">Google Play</a> and the iPhone beta is on <a href="https://testflight.apple.com/join/w7GBYdvT">TestFlight</a>. At this till release, Play listed Setup 1.0.0. Confirm Card 4.0 support with your issuer before preparing cards.</p>
+  <p>The store app offers the <strong>Test</strong> and <strong>Live</strong> registry choices. Ask your issuer which matches the till.</p>
 </section>
 <section id="top-ups">
   <h2>The first top-up</h2>
