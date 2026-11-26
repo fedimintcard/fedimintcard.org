@@ -132,6 +132,10 @@ ul.risks details p { margin: -4px 0 0; padding-bottom: 16px; }
   header.top nav { order: 3; width: 100%; margin-left: 0; gap: 20px; font-size: 15px; }
 }
 @media (max-width: 420px) { .status { display: none; } }
+@media (max-width: 360px) {
+  header.top nav { flex-wrap: wrap; gap: 6px 12px; }
+  header.top nav a { white-space: nowrap; }
+}
 /* developer page: code, tables, contents */
 .doc code { font: 500 .9em var(--mono); color: var(--ink); overflow-wrap: anywhere; }
 .doc pre { margin: 16px 0 0; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(11, 21, 48, .7); font: 500 14px/1.6 var(--mono); color: var(--ink); overflow-x: auto; }

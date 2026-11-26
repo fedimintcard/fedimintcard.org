@@ -20,14 +20,14 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/site.css?v=3">
+<link rel="stylesheet" href="/assets/site.css?v=4">
 </head>
 <body>
 <div class="wrap">
 
 <header class="top">
   <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
-  <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/developers">Developers</a><a href="/fund">Fund</a></nav>
+  <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/downloads">Downloads</a><a href="/developers">Developers</a><a href="/fund">Fund</a></nav>
   <span class="status">Experimental prototype</span>
 </header>
 
@@ -40,13 +40,13 @@
 <section>
   <h2>What you need</h2>
   <ul>
-    <li><strong>A federation.</strong> Your community's Fedimint federation. Its guardians check each payment and mark the notes spent. Your guardians run it.</li>
-    <li><strong>A till.</strong> A small server with a wallet in your federation. It builds each payment and sends it to the federation, and its wallet receives what merchants are paid. It sits on the merchants' side, and your community decides who runs it.</li>
-    <li><strong>The POS app.</strong> Fedimint Card POS, on each merchant's phone (<a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Google Play</a>, <a href="https://testflight.apple.com/join/X5r1fege">TestFlight</a>). It reads the card by NFC, takes the PIN and passes the card's answers to the till. Each merchant installs it.</li>
-    <li><strong>Cards.</strong> NXP J3R180 contactless cards with the Fedimint Card applet. Each holder gets one card and its PIN.</li>
+    <li><strong>A federation.</strong> Your community’s Fedimint federation with a Bitcoin mint v1 or v2 module. Its guardians check each payment and mark the notes spent. Your guardians run it.</li>
+    <li><strong>A till.</strong> A <a href="/downloads#till">Card 4.0 merchant till</a> with a wallet in your federation. It builds each payment and sends it to the federation, and its wallet receives what merchants are paid. It sits on the merchants' side, and your community decides who runs it.</li>
+    <li><strong>The POS app.</strong> Use the <a href="/downloads#pos">signed Card 4.0 Android POS app</a> for a new install. The store channels are <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Google Play</a>, <a href="https://testflight.apple.com/join/X5r1fege">TestFlight</a>. The app reads the card by NFC, takes the PIN and passes the card's answers to the till. Each merchant installs it.</li>
+    <li><strong>Cards.</strong> Compatible contactless cards with the Card 4.x applet, such as the J3R180 or J3R452. Each holder gets one card and its PIN.</li>
     <li><strong>The Setup app.</strong> Fedimint Card Setup, on the phone of the person who issues cards (<a href="https://play.google.com/store/apps/details?id=org.fedimintcard.provisioner">Google Play</a>, <a href="https://testflight.apple.com/join/w7GBYdvT">TestFlight</a>). It sets up a blank card in one tap, and it approves your tills.</li>
   </ul>
-  <p>Cards set up with these apps are recorded in the card registry at registry.fedimintcard.org. It keeps each card's notes and sees every card's balance (see <a href="/privacy">Privacy</a>). The Setup app signs in to an operator account on the registry, and only the people who run the registry can make one.</p>
+  <p>Check with your issuer that your cards and registry support Card 4.0 and your federation’s mint. The till uses registry.fedimintcard.org by default. The registry records the notes associated with each card (see <a href="/privacy">Privacy</a>). The Setup app signs in to an operator account on the registry, and only the people who run the registry can make one.</p>
 </section>
 
 <section>
@@ -71,12 +71,12 @@
   <h2>A pilot, step by step</h2>
   <ol class="steps" style="grid-template-columns: minmax(0, 1fr); margin-top: 20px">
     <li><h3>Decide who runs the till</h3><p>Choose the person who will run the till. Its wallet receives what merchants are paid. To connect the till to the registry, the till shows a QR code and a short code, and the card issuer approves it in the Setup app under Settings, then Tills, then Add a till.</p></li>
-    <li><h3>Put the POS app on the first merchants' phones</h3><p>Install Fedimint Card POS on each merchant's phone and pair it with the till. The till shows a pairing QR code, and the merchant scans it with Pair with till in the POS settings. The phone needs to reach its till.</p></li>
+    <li><h3>Put the POS app on the first merchants' phones</h3><p>Install Fedimint Card POS on each merchant's phone and pair it with the till. The till shows a pairing QR code, and the merchant scans it with Pair with till in the POS settings. The phone needs a connection to pair and sync.</p></li>
     <li><h3>Get cards</h3><p>Use ready-made cards, or set up blank cards with the Setup app, one tap per card, in batches. Each card makes its own keys on its chip and gets a PIN of 4 to 8 digits.</p></li>
-    <li><h3>Hand out cards with their PINs</h3><p>Give each holder their card and its PIN. Tell them that three wrong PINs stop the card for good, and to keep only small amounts on it.</p></li>
-    <li><h3>Top up</h3><p>On the POS, read the card and tap Top up card. Type an amount in sats and tap Create invoice. The holder pays the Lightning invoice from their wallet, then taps the card, and the POS shows how much was loaded.</p></li>
+    <li><h3>Hand out cards with their PINs</h3><p>Give each holder their card and its PIN. Ask holders to keep their PIN private and carry only small amounts.</p></li>
+    <li><h3>Top up</h3><p>On the POS, read the card and tap Top up card. Enter an amount in sats and tap <strong>Review top-up</strong>. The holder checks the card credit, fixed top-up fee and total, then chooses <strong>Show payment QR</strong>. After paying that invoice, tap the card to load the quoted credit.</p></li>
     <li><h3>Take the first payment</h3><p>Tap Charge card and type the price. The holder types the PIN on the merchant's phone and taps the card. The card signs the payment and the federation settles it.</p></li>
-    <li><h3>Check after the first day</h3><p>Look at the till's list of sales and its status, which shows the federation, the wallet balance, the card link and the registry. A payment taken offline waits at the till until it is back online. Back up the till's wallet together with its queue of offline payments, because that queue is the merchants' money until it is sent.</p></li>
+    <li><h3>Check after the first day</h3><p>Look at the till's list of sales and its status, which shows the federation, the wallet balance, the card link and the registry. A disconnected POS phone keeps eligible offline payments until it can sync. Reconnect each phone and confirm that its payments settle. Follow the <a href="/downloads#till">till backup guide</a> for its wallet and payment records.</p></li>
   </ol>
 </section>
 
@@ -84,9 +84,9 @@
   <h2>What it costs to run</h2>
   <ul>
     <li><strong>Cards.</strong> One blank J3R180 card for each holder. <a href="/#buy">Where to get cards</a> lists prices as they were on 23 October 2026.</li>
-    <li><strong>A machine for the till.</strong> A server that runs the till and its wallet. The project's own till runs on StartOS.</li>
+    <li><strong>A machine for the till.</strong> A server that runs the till and its wallet. Install the <a href="/downloads#till">StartOS package or Docker image</a>.</li>
     <li><strong>Phones.</strong> An NFC phone for each merchant, and one for the person who sets up cards.</li>
-    <li><strong>The federation's fees.</strong> Your federation and its Lightning gateways set their own fees. A gateway's fee on a top-up is paid by the till. Your federation can tell you its fees.</li>
+    <li><strong>The federation's fees.</strong> The POS quotes a fixed customer fee that covers receiving the Lightning payment and loading the card. Any fee left after costs stays with the merchant. The sending wallet may quote its own routing fee.</li>
   </ul>
 </section>
 
@@ -97,7 +97,7 @@
   <ul>
     <li>The federation holds the bitcoin.</li>
     <li>A lost or wiped card loses its eCash.</li>
-    <li>The PIN is the only guard.</li>
+    <li>Keep the card’s PIN private.</li>
     <li>Pay only at tills you trust.</li>
     <li>The registry can see balances.</li>
     <li>The Fedi app cannot load cards.</li>
