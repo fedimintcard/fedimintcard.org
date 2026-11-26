@@ -35,11 +35,11 @@
 <p class="eyebrow">Experimental / Privacy</p>
 <h1>Privacy policy</h1>
 <p class="lede">What fedimintcard.org and the card registry collect, why, and how to reach us about it.</p>
-<ul class="facts" aria-label="At a glance"><li>Island Bitcoin LLC</li><li>Ecash Card LLC</li><li>No cookies</li><li>No tracking</li><li>Registry sees card balances</li><li>5 Nov 2026</li></ul>
+<ul class="facts" aria-label="At a glance"><li>Island Bitcoin LLC</li><li>No cookies</li><li>No tracking</li><li>Registry sees card balances</li><li>25 Nov 2026</li></ul>
 
 <section>
   <h2>Who this covers</h2>
-  <p>Island Bitcoin LLC runs fedimintcard.org and the hi@fedimintcard.org mailbox. Ecash Card LLC, a company now being formed, runs the card registry at registry.fedimintcard.org. This policy covers all three. Write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a> with any privacy question or request.</p>
+  <p>Island Bitcoin LLC runs fedimintcard.org, the hi@fedimintcard.org mailbox and the hosted card registry at registry.fedimintcard.org. This policy covers all three. Write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a> with any privacy question or request.</p>
   <p>Fedimint Card is an open source project. Anyone can run the card software, a till or a wallet themselves, and a copy run by someone else follows that operator's own policy.</p>
 </section>
 
@@ -56,7 +56,7 @@
 
 <section>
   <h2>The card registry</h2>
-  <p>Cards set up with the Fedimint Card apps are recorded in a registry that Ecash Card LLC runs at registry.fedimintcard.org. When a card is tapped, the till asks the registry for the card's notes, and after each payment or top-up it writes the result back.</p>
+  <p>Setup records each card with the operator’s registry. Island Bitcoin LLC operates the hosted registry at registry.fedimintcard.org. When a card is tapped, the till asks the registry for the card's notes, and after each payment or top-up it writes the result back.</p>
   <p>For each card, the registry stores:</p>
   <ul>
     <li>a short card ID, taken from the card's first public key, and the public keys of the card's slots;</li>
@@ -64,12 +64,12 @@
     <li>each payment and top-up: its amount, its time, the till that took it and the transaction the federation accepted;</li>
     <li>when the card was set up, the batch it came from and whether it has a PIN.</li>
   </ul>
-  <p>So Ecash Card LLC can see each card's balance and its full payment history. The registry cannot spend from a card. Every spend needs a signature from the card's own chip, and the chip signs only after the right PIN is entered.</p>
+  <p>As the hosted registry operator, Island Bitcoin LLC can see each card's balance and its full payment history. The registry cannot spend from a card. Every spend needs a signature from the card's own chip, and the chip signs only after the right PIN is entered.</p>
   <p>The registry stores no names, email addresses, phone numbers or PINs. A card ID is tied to a person only if someone makes that link, for example whoever handed you the card.</p>
   <p>An operator who issues cards sees the records of the cards they issued and the payments taken by their tills. A till reads a card's notes, and so its balance, each time the card is tapped there.</p>
   <p>The registry runs on Cloudflare Workers and saves an encrypted backup to Cloudflare R2 every night. Cloudflare logs each request to it, including the till's IP address.</p>
-  <p>Ecash Card LLC keeps a card's records for as long as the card holds value, because the card cannot be spent without them. To have the records of an empty or reset card removed, write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>.</p>
-  <p>Ecash Card LLC plans to store each card's notes encrypted with a key that only the card can release. Once that ships, the registry will no longer see balances or payment amounts, and this page will say so.</p>
+  <p>Island Bitcoin LLC keeps a card's records for as long as the card holds value, because the card cannot be spent without them. To have the records of an empty or reset card removed, write to <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a>.</p>
+  <p>The project plans to store each card's notes encrypted with a key that only the card can release. Once that ships, the registry will no longer see balances or payment amounts, and this page will say so.</p>
 </section>
 
 <section>
@@ -90,7 +90,7 @@
 
 <section>
   <h2>Changes</h2>
-  <p>Effective 11 November 2026. The version dated 5 November 2026 did not say that a POS phone keeps payments it takes while it cannot reach its till. The version dated 27 October 2026 said we received no data about cards or payments; that stopped being true when the registry began holding card records. When this policy changes, the new version is posted here with its date.</p>
+  <p>Effective 25 November 2026. This revision identifies Island Bitcoin LLC as the operator of the hosted card registry. The version dated 5 November 2026 did not say that a POS phone keeps payments it takes while it cannot reach its till. The version dated 27 October 2026 said we received no data about cards or payments; that stopped being true when the registry began holding card records. When this policy changes, the new version is posted here with its date.</p>
 </section>
 </main>
 
