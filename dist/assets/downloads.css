@@ -114,6 +114,10 @@ footer.download-foot { display:block; margin: 0; padding: 0; border-top: 1px sol
   .choice .companion { display: table; margin: 12px 0 0; }
   .notes { grid-template-columns: .73fr 1.27fr; gap: 18px; }
 }
+@media (min-width: 651px) and (max-width: 960px) {
+  .photo { display: grid; place-items: center; background: linear-gradient(150deg, #294477, #15274e 65%, #122344); }
+  .photo img { position: static; width: 91%; height: auto; border-radius: 5px; box-shadow: 0 15px 30px #0a163d66; }
+}
 @media (max-width: 650px) {
   .downloads .rail { width: calc(100% - 32px); }
   .mast-line { min-height: 56px; column-gap: 12px; }
