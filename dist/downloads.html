@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Downloads · Fedimint Card</title>
 <meta name="description" content="Get the Android POS app and install the Card 4.0 merchant till on StartOS or Docker.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0B1530">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#f7f8fa">
 <link rel="canonical" href="https://fedimintcard.org/downloads">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
@@ -21,62 +21,126 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="/assets/fonts/Figtree-Variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/site.css?v=4">
+<link rel="stylesheet" href="/assets/downloads.css?v=1">
+<script src="/assets/downloads.js?v=1" defer></script>
 </head>
-<body>
-<div class="wrap">
-
-<header class="top">
-  <a class="lock" href="/" aria-label="Fedimint Card home"><img src="/assets/mark.svg" alt="" width="34" height="26"><span><b>fedimint</b>card</span></a>
-  <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/downloads" aria-current="page">Downloads</a><a href="/developers">Developers</a><a href="/fund">Fund</a></nav>
-  <span class="status">Experimental prototype</span>
-</header>
-
-<main class="doc">
-<h1>Downloads</h1>
-<p class="lede">To take payments, pair the POS app on an NFC phone with a Card 4.0 merchant till.</p>
-<section id="pos">
-  <h2>POS app for Android</h2>
-  <p>Version 1.1.0, build 8. This signed APK includes the offline payment core for arm64-v8a and x86_64.</p>
-  <p><a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/FedimintCard-POS-1.1.0-8.apk"><strong>Download the Android APK</strong></a> · <a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/FedimintCard-POS-1.1.0-8.apk.sha256">Verify the SHA-256 checksum</a></p>
-  <p>Use the APK for a fresh install or to update a copy from this GitHub release channel. If you installed POS from <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Google Play</a>, get updates through Play so Android recognizes the signing certificate and keeps your app data. At the 0.1.0 till release, Google Play listed POS 1.0.0.</p>
-  <p>The iPhone beta is on <a href="https://testflight.apple.com/join/X5r1fege">TestFlight</a>. The public invitation does not list a build number. Check that your app offers <strong>Review top-up</strong> before issuing a new fee-inclusive invoice.</p>
-</section>
-<section id="till">
-  <h2>Merchant till</h2>
-  <p>Till 0.1.0 accepts Card 4.x. It supports Bitcoin mint v1 and v2 and requires a Card 4.0 registry that supports your federation’s mint. Keep a compatible till available for holders of older cards.</p>
-  <p>Before joining a federation or issuing cards, confirm with your registry operator that Card 4.0 is enabled for your federation’s mint. The till defaults to <code>registry.fedimintcard.org</code>. Choose the same registry in Setup and on the till.</p>
-  <div class="buy">
-    <article>
-      <h3>StartOS</h3>
-      <p>Download revision 12 for your server’s processor.</p>
-      <p><a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-aarch64.s9pk">ARM64 package</a> · <a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-x86_64.s9pk">Intel / AMD package</a></p>
-      <p><a href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/SHA256SUMS">StartOS checksums</a></p>
-      <a class="go" href="https://github.com/bobodread876/fedimintcard-till-startos/blob/main/instructions.md">Install on StartOS</a>
-    </article>
-    <article>
-      <h3>Docker</h3>
-      <p>The image <code>ghcr.io/fedimintcard/till:0.1.0</code> supports Linux amd64 and arm64. Use Docker Compose to start the till, open its admin page and pair your phone.</p>
-      <a class="go" href="https://github.com/fedimintcard/fedimintcard/blob/e17eb1b21790f92d7134aa1f06d41f621fd733e0/docs/TILL-DOCKER.md">Install with Docker</a>
-    </article>
+<body class="downloads">
+<a class="skip-download" href="#main">Skip to downloads</a>
+<header class="mast">
+  <div class="rail mast-line">
+    <a class="wordmark" href="/" aria-label="Fedimint Card home"><img src="/assets/mark-on-paper.svg" width="33" height="26" alt=""><span><strong>fedimint</strong>card</span></a>
+    <nav aria-label="Main"><a href="/#buy">Get cards</a><a href="/downloads" aria-current="page">Downloads</a><a href="/developers">Developers</a><a href="/fund">Fund</a></nav>
   </div>
-  <p><a href="https://github.com/fedimintcard/fedimintcard/releases/tag/till-v0.1.0">Release notes and all files</a></p>
-</section>
-<section id="setup">
-  <h2>Card Setup for issuers</h2>
-  <p>Fedimint Card Setup prepares cards and approves tills. The Android app is on <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.provisioner">Google Play</a> and the iPhone beta is on <a href="https://testflight.apple.com/join/w7GBYdvT">TestFlight</a>. At this till release, Play listed Setup 1.0.0. Confirm Card 4.0 support with your issuer before preparing cards.</p>
-  <p>The store app offers the <strong>Test</strong> and <strong>Live</strong> registry choices. Ask your issuer which matches the till.</p>
-</section>
-<section id="top-ups">
-  <h2>The first top-up</h2>
-  <p>A new till can start with an empty wallet. The POS shows the card credit, the fixed top-up fee and the total before the customer opens the payment QR. One Lightning payment covers the load. Any fee left after costs stays with the merchant. The customer’s Lightning wallet may charge a separate routing fee.</p>
-  <p><a href="https://github.com/fedimintcard/fedimintcard/blob/e17eb1b21790f92d7134aa1f06d41f621fd733e0/docs/TOPUP.md">Read the top-up guide</a></p>
-</section>
-</main>
-<footer>
-  <p>Fedimint Card is an independent open source project built on the Fedimint protocol, released under the <a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT License</a>. Contact: <a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></p>
-  <nav aria-label="Site"><a href="/#risks">Risks</a><a href="/community">Communities</a><a href="/developers">Developers</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub</a></nav>
-</footer>
+</header>
+<main class="rail" id="main">
+  <div class="lead">
+    <div>
+      <p class="edition">Fedimint Card 4.0</p>
+      <h1>Downloads</h1>
+    </div>
+    <a class="text-link release-link" href="https://github.com/fedimintcard/fedimintcard/releases/tag/till-v0.1.0">Release notes <span aria-hidden="true">↗</span></a>
+  </div>
+  <nav class="product-picks" data-picker="product" aria-label="Choose a product">
+    <a id="tab-pos" href="#pos">POS app</a><a id="tab-till" href="#till">Merchant till</a><a id="tab-setup" href="#setup">Card Setup</a>
+  </nav>
 
-</div>
+  <section id="pos" data-pane>
+    <div class="sheet">
+      <div class="product-copy">
+        <h2>Point of sale</h2>
+        <p class="description">Take payments and top up cards with an NFC phone paired to your till.</p>
+        <nav class="platform-picks" data-picker="platform" aria-label="POS platform">
+          <a id="tab-pos-android" href="#pos-android">Android</a><a id="tab-pos-ios" href="#pos-ios">iPhone</a>
+        </nav>
+        <div id="pos-android" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">Android · </span>Version 1.1.0 <span>·</span> Build 8 <span>·</span> 9.1 MB</p>
+          <a class="primary" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/FedimintCard-POS-1.1.0-8.apk">Download APK <span aria-hidden="true">↓</span></a>
+          <a class="companion" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/FedimintCard-POS-1.1.0-8.apk.sha256">SHA-256 checksum</a>
+          <span class="channel-note">Installed from Play? <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Update on Google Play</a>.</span>
+        </div>
+        <div id="pos-ios" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">iPhone · </span>iOS beta <span>·</span> TestFlight</p>
+          <a class="primary" href="https://testflight.apple.com/join/X5r1fege">Open TestFlight <span aria-hidden="true">↗</span></a>
+          <span class="channel-note">For card top-ups, look for <strong>Review top-up</strong> in POS.</span>
+        </div>
+      </div>
+      <div class="product-art photo"><img src="/assets/card-studio.webp" width="1200" height="676" alt="Blue Fedimint Card with its gold chip and contactless symbol." fetchpriority="high"></div>
+    </div>
+    <div class="notes">
+      <h3>Using the POS app</h3>
+      <div class="questions">
+        <details><summary>Already installed from Google Play?</summary><p>Update through Google Play to keep your app data and pairing. The signed APK is for a fresh install or an update from the same GitHub channel. At this till release, Play listed POS 1.0.0. <a href="https://play.google.com/store/apps/details?id=org.fedimintcard.pos">Open Google Play ↗</a></p></details>
+        <details><summary>How do I pair my phone?</summary><p>Open phone pairing in Till admin. On the phone, open <strong>Settings → Pair with till</strong> and scan the code. Connect once while online to fetch the offline kit. <a href="#till">Get the merchant till →</a></p></details>
+        <details id="top-ups"><summary>How does the first top-up work?</summary><p>A new till can start with an empty wallet. In POS, choose <strong>Review top-up</strong> to see the card credit, fixed fee and total before paying one Lightning invoice. Tap the card to load the agreed amount. Any fee left after costs stays with the merchant. The sending wallet may charge a routing fee. <a href="https://github.com/fedimintcard/fedimintcard/blob/e17eb1b21790f92d7134aa1f06d41f621fd733e0/docs/TOPUP.md">Top-up guide ↗</a></p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="till" data-pane>
+    <div class="sheet">
+      <div class="product-copy">
+        <h2>Merchant till</h2>
+        <p class="description">Run the wallet that receives your sales. Pair phones, review payments and withdraw proceeds.</p>
+        <nav class="platform-picks" data-picker="platform" aria-label="Till platform">
+          <a id="tab-till-startos" href="#till-startos">StartOS</a><a id="tab-till-docker" href="#till-docker">Docker</a>
+        </nav>
+        <div id="till-startos" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">StartOS · </span>Till 0.1.0 <span>·</span> Revision 12</p>
+          <p class="control-label">Choose your server’s processor</p>
+          <div class="action-pair"><a class="primary" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-x86_64.s9pk">Intel / AMD <span aria-hidden="true">↓</span></a><a class="alternate" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/fedimintcard-till-0.1.0-12-aarch64.s9pk">ARM64 <span aria-hidden="true">↓</span></a></div>
+          <a class="companion" href="https://github.com/fedimintcard/fedimintcard/releases/download/till-v0.1.0/SHA256SUMS">Package checksums</a>
+        </div>
+        <div id="till-docker" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">Docker · </span>Till 0.1.0 <span>·</span> Linux amd64 / arm64</p>
+          <a class="primary" href="https://github.com/fedimintcard/fedimintcard/blob/e17eb1b21790f92d7134aa1f06d41f621fd733e0/docs/TILL-DOCKER.md">Install with Docker <span aria-hidden="true">↗</span></a>
+          <span class="channel-note"><code>ghcr.io/fedimintcard/till:0.1.0</code></span>
+        </div>
+      </div>
+      <div class="product-art console"><div class="browser-frame"><div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="/assets/till-overview.webp" width="1040" height="780" alt="Till admin showing the wallet balance and recent sales."></div></div>
+    </div>
+    <div class="notes">
+      <h3>Setting up the till</h3>
+      <div class="questions">
+        <details><summary>Which cards and registry do I need?</summary><p>Use Card 4.x and a Card 4.0 registry that supports your federation’s Bitcoin mint, v1 or v2. Confirm support with your operator before joining or issuing cards. The till defaults to <code>registry.fedimintcard.org</code>. Choose the same registry and federation in Setup and on the till. Keep a compatible till available for older cards.</p></details>
+        <details><summary>How do I install or update on StartOS?</summary><p>Choose x86_64 for Intel or AMD and aarch64 for ARM64. For an update, back up the existing service and sideload the matching package over it. Start the service, open Till admin and check that your wallet and phone pairing open. <a href="https://github.com/bobodread876/fedimintcard-till-startos/blob/main/instructions.md">StartOS merchant guide ↗</a></p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="setup" data-pane>
+    <div class="sheet">
+      <div class="product-copy">
+        <h2>Card Setup</h2>
+        <p class="description">Prepare cards for your federation and approve the merchant tills that take them.</p>
+        <nav class="platform-picks" data-picker="platform" aria-label="Setup platform">
+          <a id="tab-setup-android" href="#setup-android">Android</a><a id="tab-setup-ios" href="#setup-ios">iPhone</a>
+        </nav>
+        <div id="setup-android" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">Android · </span>Issuer app <span>·</span> Google Play</p>
+          <a class="primary" href="https://play.google.com/store/apps/details?id=org.fedimintcard.provisioner">Open Google Play <span aria-hidden="true">↗</span></a>
+          <span class="channel-note">Play listed Setup 1.0.0 at this till release.</span>
+        </div>
+        <div id="setup-ios" class="choice" data-pane>
+          <p class="build"><span class="fallback-platform">iPhone · </span>Issuer beta <span>·</span> TestFlight</p>
+          <a class="primary" href="https://testflight.apple.com/join/w7GBYdvT">Open TestFlight <span aria-hidden="true">↗</span></a>
+          <span class="channel-note">Check the build offered in TestFlight.</span>
+        </div>
+      </div>
+      <div class="product-art card-stack" aria-hidden="true"><img class="card-under" src="/assets/card-front.webp" width="1200" height="759" alt=""><img class="card-over" src="/assets/card-back.webp" width="1200" height="759" alt=""></div>
+    </div>
+    <div class="notes">
+      <h3>Before issuing cards</h3>
+      <div class="questions">
+        <details><summary>Which registry should I select?</summary><p>Ask your issuer which registry supports Card 4.0 and your federation’s mint. Choose the matching <strong>Test</strong> or <strong>Live</strong> registry in Setup and confirm the app build supports Card 4.0 before preparing cards.</p></details>
+        <details><summary>How do I approve a till?</summary><p>Open <strong>Settings → Tills → Add a till</strong>. Scan the registry claim QR from the merchant till and check its name before approving it. <a href="https://github.com/fedimintcard/fedimintcard/blob/e17eb1b21790f92d7134aa1f06d41f621fd733e0/docs/TILL-CLAIM.md">Till pairing guide ↗</a></p></details>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="download-foot">
+  <div class="rail foot-line"><a class="wordmark small" href="/" aria-label="Fedimint Card home"><img src="/assets/mark-on-paper.svg" alt="" width="24" height="19"><span><strong>fedimint</strong>card</span></a>
+  <nav aria-label="Site"><a href="/#buy">Get cards</a><a href="/community">Communities</a><a href="/fund">Fund</a><a href="/support">Support</a><a href="/privacy">Privacy</a><a href="https://github.com/fedimintcard">GitHub ↗</a></nav></div>
+  <div class="rail foot-meta"><a href="/#risks">Experimental software</a><span aria-hidden="true">·</span><a href="https://github.com/fedimintcard/fedimintcard/blob/main/LICENSE">MIT license</a><span aria-hidden="true">·</span><a href="mailto:hi@fedimintcard.org">hi@fedimintcard.org</a></div>
+</footer>
 </body>
 </html>

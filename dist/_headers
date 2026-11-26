@@ -21,3 +21,9 @@
   Permissions-Policy: camera=(self), microphone=(), geolocation=(), interest-cohort=()
   Content-Security-Policy: default-src 'self'; img-src 'self'; media-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self'; connect-src https://donate.islandbitcoin.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
   Cache-Control: public, max-age=300
+
+# Download selectors progressively enhance the static installation links.
+/downloads
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; img-src 'self'; media-src 'self'; style-src 'self'; font-src 'self'; script-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Cache-Control: public, max-age=300
